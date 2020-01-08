@@ -27,7 +27,9 @@ public class EntityTracer extends JavaPlugin {
         File f = new File(EntityTracer.path);
 
         if (!f.exists()) {
-            assert (f.mkdir());
+            if (f.mkdirs()) {
+                this.log.info("Creating directory: " + path);
+            }
         } else {
             SerializationUtil.deserialize(TracerUser.hmd, this.log);
         }
