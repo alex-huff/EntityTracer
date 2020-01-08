@@ -1,13 +1,28 @@
 package phonis.entitytracer.trace;
 
 import org.bukkit.Location;
+import phonis.entitytracer.util.Offset;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Class representing tracked TNT and Sand movement
  */
 public abstract class Trace {
+    protected static List<Offset> vertices = new ArrayList<>(
+        Arrays.asList(
+            new Offset(.49F, .49F, .49F),
+            new Offset(-.49F, .49F, .49F),
+            new Offset(-.49F, -.49F, .49F),
+            new Offset(.49F, -.49F, .49F),
+            new Offset(.49F, .49F, -.49F),
+            new Offset(-.49F, .49F, -.49F),
+            new Offset(-.49F, -.49F, -.49F),
+            new Offset(.49F, -.49F, -.49F)
+        )
+    );
     private final Location start;
     private final Location finish;
     private int life;
@@ -28,7 +43,7 @@ public abstract class Trace {
     /**
      * The particles representing the trace
      *
-     * @return List<PartlicleLocation>
+     * @return List<ParticleLocation>
      */
     public abstract List<ParticleLocation> getParticles();
 
@@ -37,7 +52,7 @@ public abstract class Trace {
      *
      * @return Location
      */
-    public Location getStart() {
+    protected Location getStart() {
         return this.start;
     }
 
@@ -46,16 +61,16 @@ public abstract class Trace {
      *
      * @return Location
      */
-    public Location getFinish() {
+    protected Location getFinish() {
         return this.finish;
     }
 
     /**
-     * Decrement life by one
+     * Gets life ticks
      *
      * @return int
      */
-    public int decLife() {
-        return --this.life;
+    protected int getLife() {
+        return this.life;
     }
 }

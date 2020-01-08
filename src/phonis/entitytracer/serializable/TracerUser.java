@@ -1,7 +1,11 @@
 package phonis.entitytracer.serializable;
 
+import org.bukkit.Location;
+import phonis.entitytracer.trace.ParticleLocation;
+import phonis.entitytracer.trace.ParticleLocationComparator;
+
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Class for storing data related to a user of the EntityTracer plugin
@@ -15,11 +19,13 @@ public class TracerUser implements Serializable {
     private boolean endPosSand;
     private boolean endPosTNT;
     private boolean tickConnect;
+    private transient boolean unlimitedRadius = false;
     private double minDistance;
     private double traceRadius;
     private transient double viewRadius;
     private int maxParticles;
     private int traceTime;
+    private transient Set<ParticleLocation> pLocs = new HashSet<>();
 
     /**
      * Private constructor for TracerUser
@@ -174,6 +180,15 @@ public class TracerUser implements Serializable {
     }
 
     /**
+     * Determines whether this user has unlimited radius based on max particles
+     *
+     * @return
+     */
+    public boolean isUnlimitedRadius() {
+        return this.unlimitedRadius;
+    }
+
+    /**
      * Get minimum distance traveled per tick for tracking
      *
      * @return double
@@ -261,5 +276,48 @@ public class TracerUser implements Serializable {
      */
     public void setTraceTime(int traceTime) {
         this.traceTime = traceTime;
+    }
+
+    /**
+     * Get particle location of user
+     *
+     * @return Set<ParticleLocation>
+     */
+    public Set<ParticleLocation> getParticleLocations() {
+        return this.pLocs;
+    }
+
+    /**
+     * Update radius to account for max particles
+     *
+     * @param loc location of player
+     */
+    public void updateRadius(Location loc) {
+        if (this.pLocs.size() != 0 && !(loc.getWorld() == this.pLocs.iterator().next().getLocation().getWorld())) {
+            this.pLocs.clear();
+
+            return;
+        }
+
+        if (this.maxParticles > this.pLocs.size()) {
+            this.unlimitedRadius = true;
+        } else {
+            this.unlimitedRadius = false;
+
+            List<ParticleLocation> pLAL = new ArrayList<>(this.pLocs);
+            PriorityQueue<ParticleLocation> pq = new PriorityQueue<>((new ParticleLocationComparator(loc)).reversed());
+            pq.addAll(pLAL.subList(0, this.maxParticles));
+
+            for (int i = this.maxParticles; i < this.pLocs.size(); i++) {
+                if (pq.comparator().compare(pLAL.get(i), pq.peek()) > 0) {
+                    pq.poll();
+                    pq.add(pLAL.get(i));
+                }
+            }
+
+            if (pq.peek() == null) return;
+
+            this.viewRadius = loc.distance(pq.peek().getLocation());
+        }
     }
 }
