@@ -1,0 +1,13 @@
+public class regionmanager{
+    public static boolean checkparticleinrender(Entity player, int renderraduis, Vec3D particleposition){
+      double maxX = player.locX + (16 * renderraduis);
+      double maxZ = player.locY + (16 * renderraduis);
+      double minX = player.locX - (16 * renderraduis);
+      double minZ = player.locX - (16 * renderraduis);
+      if(particleposition.a < maxX && particleposition.a > minX && particleposition.c < maxZ && particleposition.c > minZ){
+          return true;
+      }else{
+          return false;s
+      }
+    }
+}
