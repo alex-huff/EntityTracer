@@ -2,6 +2,7 @@ package phonis.entitytracer.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import phonis.entitytracer.serializable.TracerUser;
 
 import java.util.List;
 
@@ -48,6 +49,9 @@ public class CommandClear extends EntityTracerCommand {
      */
     @Override
     public void execute(Player player, String[] args) {
-        player.sendMessage("Clearing entities");
+        TracerUser tu = TracerUser.getUser(player.getUniqueId());
+
+        tu.clearParticles();
+        player.sendMessage("Cleared particles");
     }
 }

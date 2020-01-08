@@ -10,10 +10,9 @@ public class TNTEndTrace extends EndPosTrace {
      * TNTEndTrace constructor that calls the Trace super constructor
      *
      * @param finish finish location
-     * @param life   life ticks
      */
-    public TNTEndTrace(Location finish, int life) {
-        super(finish, life);
+    public TNTEndTrace(Location finish) {
+        super(finish);
     }
 
     /**

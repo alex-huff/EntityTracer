@@ -14,10 +14,9 @@ public abstract class EndPosTrace extends Trace {
      * EndPosTrace constructor that calls the Trace super constructor
      *
      * @param finish finish location
-     * @param life   life ticks
      */
-    public EndPosTrace(Location finish, int life) {
-        super(null, finish, life);
+    public EndPosTrace(Location finish) {
+        super(null, finish);
     }
 
     /**
@@ -33,20 +32,15 @@ public abstract class EndPosTrace extends Trace {
      * @return List<ParticleLocation>
      */
     @Override
-    public List<ParticleLocation> getParticles() {
+    public List<ParticleLocation> getParticles(int life, boolean connected) {
         List<ParticleLocation> ret = new ArrayList<>();
         Location finish = this.getFinish();
 
         for (Offset offset : Trace.vertices) {
             ret.add(
                 new ParticleLocation(
-                    new Location(
-                        finish.getWorld(),
-                        finish.getX() + offset.getX(),
-                        finish.getY() + offset.getY(),
-                        finish.getZ() + offset.getZ()
-                    ),
-                    this.getLife(),
+                    finish.clone().add(offset.getX(), offset.getY(), offset.getZ()),
+                    life,
                     this.getType()
                 )
             );

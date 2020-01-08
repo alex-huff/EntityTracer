@@ -25,19 +25,16 @@ public abstract class Trace {
     );
     private final Location start;
     private final Location finish;
-    private int life;
 
     /**
      * Trace constructor
      *
      * @param start  start location
      * @param finish finish location
-     * @param life   life time
      */
-    public Trace(Location start, Location finish, int life) {
+    public Trace(Location start, Location finish) {
         this.start = start;
         this.finish = finish;
-        this.life = life;
     }
 
     /**
@@ -45,7 +42,7 @@ public abstract class Trace {
      *
      * @return List<ParticleLocation>
      */
-    public abstract List<ParticleLocation> getParticles();
+    public abstract List<ParticleLocation> getParticles(int life, boolean connected);
 
     /**
      * Get start location
@@ -63,14 +60,5 @@ public abstract class Trace {
      */
     protected Location getFinish() {
         return this.finish;
-    }
-
-    /**
-     * Gets life ticks
-     *
-     * @return int
-     */
-    protected int getLife() {
-        return this.life;
     }
 }

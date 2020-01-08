@@ -1,6 +1,7 @@
 package phonis.entitytracer.trace;
 
 import org.bukkit.Location;
+import phonis.entitytracer.util.Offset;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,20 +10,19 @@ import java.util.List;
  * Trace representing tnt and sand movement
  */
 public abstract class EntityMoveTrace extends Trace {
-    private boolean connected;
+    private boolean isStart;
 
     /**
      * EntityMoveTrace constructor that calls the Trace super constructor
      *
-     * @param start     start location
-     * @param finish    finish location
-     * @param life      life ticks
-     * @param connected is trace connected
+     * @param start   start location
+     * @param finish  finish location
+     * @param isStart start of entity's movement
      */
-    public EntityMoveTrace(Location start, Location finish, int life, boolean connected) {
-        super(start, finish, life);
+    public EntityMoveTrace(Location start, Location finish, boolean isStart) {
+        super(start, finish);
 
-        this.connected = connected;
+        this.isStart = isStart;
     }
 
     /**
@@ -38,20 +38,32 @@ public abstract class EntityMoveTrace extends Trace {
      * @return List<ParticleLocation>
      */
     @Override
-    public List<ParticleLocation> getParticles() {
+    public List<ParticleLocation> getParticles(int life, boolean connected) {
         List<ParticleLocation> ret = new ArrayList<>();
         Location start = this.getStart();
         Location finish = this.getFinish();
 
+        if (isStart) {
+            for (Offset offset : Trace.vertices) {
+                ret.add(
+                    new ParticleLocation(
+                        start.clone().add(offset.getX(), offset.getY(), offset.getZ()),
+                        life,
+                        this.getType()
+                    )
+                );
+            }
+        }
+
         ret.add(
             new ParticleLocation(
                 start.clone(),
-                this.getLife(),
+                life,
                 this.getType()
             )
         );
 
-        if (this.connected) {
+        if (connected) {
             double offset = .25;
 
             if (start.getY() < finish.getY()) {
@@ -59,7 +71,7 @@ public abstract class EntityMoveTrace extends Trace {
                     ret.add(
                         new ParticleLocation(
                             start.clone().add(0, offset, 0),
-                            this.getLife(),
+                            life,
                             this.getType()
                         )
                     );
@@ -71,7 +83,7 @@ public abstract class EntityMoveTrace extends Trace {
                     ret.add(
                         new ParticleLocation(
                             start.clone().add(0, -offset, 0),
-                            this.getLife(),
+                            life,
                             this.getType()
                         )
                     );
@@ -88,7 +100,7 @@ public abstract class EntityMoveTrace extends Trace {
                         finish.getY(),
                         start.getZ()
                     ),
-                    this.getLife(),
+                    life,
                     this.getType()
                 )
             );
@@ -105,7 +117,7 @@ public abstract class EntityMoveTrace extends Trace {
                                 finish.getY(),
                                 start.getZ()
                             ),
-                            this.getLife(),
+                            life,
                             this.getType()
                         )
                     );
@@ -122,7 +134,7 @@ public abstract class EntityMoveTrace extends Trace {
                                 finish.getY(),
                                 start.getZ()
                             ),
-                            this.getLife(),
+                            life,
                             this.getType()
                         )
                     );
@@ -139,7 +151,7 @@ public abstract class EntityMoveTrace extends Trace {
                         finish.getY(),
                         start.getZ()
                     ),
-                    this.getLife(),
+                    life,
                     this.getType()
                 )
             );
@@ -156,7 +168,7 @@ public abstract class EntityMoveTrace extends Trace {
                                 finish.getY(),
                                 start.getZ() + offset
                             ),
-                            this.getLife(),
+                            life,
                             this.getType()
                         )
                     );
@@ -173,7 +185,7 @@ public abstract class EntityMoveTrace extends Trace {
                                 finish.getY(),
                                 start.getZ() - offset
                             ),
-                            this.getLife(),
+                            life,
                             this.getType()
                         )
                     );
@@ -186,7 +198,7 @@ public abstract class EntityMoveTrace extends Trace {
         ret.add(
             new ParticleLocation(
                 finish.clone(),
-                this.getLife(),
+                life,
                 this.getType()
             )
         );

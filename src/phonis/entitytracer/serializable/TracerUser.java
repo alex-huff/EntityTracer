@@ -1,8 +1,10 @@
 package phonis.entitytracer.serializable;
 
 import org.bukkit.Location;
+import phonis.entitytracer.EntityTracer;
 import phonis.entitytracer.trace.ParticleLocation;
 import phonis.entitytracer.trace.ParticleLocationComparator;
+import phonis.entitytracer.trace.Trace;
 
 import java.io.Serializable;
 import java.util.*;
@@ -11,7 +13,7 @@ import java.util.*;
  * Class for storing data related to a user of the EntityTracer plugin
  */
 public class TracerUser implements Serializable {
-    public static HashMapData<UUID, TracerUser> hmd = new HashMapData<>("plugins/EntityTracer/TracerUser.ser");
+    public static HashMapData<UUID, TracerUser> hmd = new HashMapData<>(EntityTracer.path + "TracerUser.ser");
 
     private boolean trace;
     private boolean traceSand;
@@ -25,7 +27,7 @@ public class TracerUser implements Serializable {
     private transient double viewRadius;
     private int maxParticles;
     private int traceTime;
-    private transient Set<ParticleLocation> pLocs = new HashSet<>();
+    private transient Set<ParticleLocation> pLocs;
 
     /**
      * Private constructor for TracerUser
@@ -182,7 +184,7 @@ public class TracerUser implements Serializable {
     /**
      * Determines whether this user has unlimited radius based on max particles
      *
-     * @return
+     * @return boolean
      */
     public boolean isUnlimitedRadius() {
         return this.unlimitedRadius;
@@ -229,17 +231,8 @@ public class TracerUser implements Serializable {
      *
      * @return double
      */
-    private double getViewRadius() {
+    public double getViewRadius() {
         return viewRadius;
-    }
-
-    /**
-     * Set view radius for user
-     *
-     * @param viewRadius new radius
-     */
-    private void setViewRadius(double viewRadius) {
-        this.viewRadius = viewRadius;
     }
 
     /**
@@ -284,7 +277,52 @@ public class TracerUser implements Serializable {
      * @return Set<ParticleLocation>
      */
     public Set<ParticleLocation> getParticleLocations() {
+        this.unNull();
+
         return this.pLocs;
+    }
+
+    /**
+     * Set set to HashSet if nullified in serialization
+     */
+    public void unNull() {
+        if (this.pLocs == null) {
+            this.pLocs = new HashSet<>();
+        }
+    }
+
+    /**
+     * Clears particles from user
+     */
+    public void clearParticles() {
+        this.pLocs.clear();
+    }
+
+    /**
+     * Add trace
+     *
+     * @param trace trace type
+     */
+    public void addTrace(Trace trace) {
+        this.addAllParticles(trace.getParticles(this.getTraceTime(), this.tickConnect));
+    }
+
+    /**
+     * Add particle locations
+     *
+     * @param pI particle locations iterable
+     */
+    private void addAllParticles(Iterable<ParticleLocation> pI) {
+        this.unNull();
+
+        if (this.pLocs.size() != 0 && !(this.pLocs.iterator().next().getLocation().getWorld() == pI.iterator().next().getLocation().getWorld())) {
+            this.pLocs.clear();
+        }
+
+        for (ParticleLocation pl : pI) {
+            this.pLocs.remove(pl);
+            this.pLocs.add(pl);
+        }
     }
 
     /**
@@ -293,6 +331,8 @@ public class TracerUser implements Serializable {
      * @param loc location of player
      */
     public void updateRadius(Location loc) {
+        this.unNull();
+
         if (this.pLocs.size() != 0 && !(loc.getWorld() == this.pLocs.iterator().next().getLocation().getWorld())) {
             this.pLocs.clear();
 

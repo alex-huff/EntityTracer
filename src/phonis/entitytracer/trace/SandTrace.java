@@ -9,13 +9,12 @@ public class SandTrace extends EntityMoveTrace {
     /**
      * SandTrace constructor that calls the Trace super constructor
      *
-     * @param start     start location
-     * @param finish    finish location
-     * @param life      life ticks
-     * @param connected is trace connected
+     * @param start   start location
+     * @param finish  finish location
+     * @param isStart start of entity's movement
      */
-    public SandTrace(Location start, Location finish, int life, boolean connected) {
-        super(start, finish, life, connected);
+    public SandTrace(Location start, Location finish, boolean isStart) {
+        super(start, finish, isStart);
     }
 
     /**
