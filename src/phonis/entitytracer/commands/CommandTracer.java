@@ -17,11 +17,9 @@ public class CommandTracer extends EntityTracerCommand {
         super(name);
         this.addSubCommand(new CommandToggle());
         this.addSubCommand(new CommandClear());
-        this.addSubCommand(new CommandMinDistance());
-        this.addSubCommand(new CommandMaxParticles());
-        this.addSubCommand(new CommandTraceRadius());
         this.addSubCommand(new CommandTraceTime());
-        this.addSubCommand(new CommandPrintSettings());
+        this.addSubCommand(new CommandSettings());
+        this.addSubCommand(new CommandBounds());
         EntityTracerCommand.registerCommand(entityTracer, this);
     }
 
@@ -57,6 +55,10 @@ public class CommandTracer extends EntityTracerCommand {
      */
     @Override
     public void execute(Player player, String[] args) throws CommandException {
-        throw new CommandException("Incorrect usage of command " + this.getName());
+        if (args.length == 0) {
+            player.sendMessage(this.getCommandString(0));
+        } else {
+            throw new CommandException("Incorrect usage of command " + this.getName());
+        }
     }
 }

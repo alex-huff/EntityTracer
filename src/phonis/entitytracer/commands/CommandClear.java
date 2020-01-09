@@ -16,6 +16,8 @@ public class CommandClear extends EntityTracerCommand {
     public CommandClear() {
         super("clear");
         this.addAlias("c");
+        this.args.add("tnt");
+        this.args.add("sand");
     }
 
     /**
@@ -26,7 +28,7 @@ public class CommandClear extends EntityTracerCommand {
      */
     @Override
     public List<String> topTabComplete(String[] args) {
-        return null;
+        return this.argsAutocomplete(args, 1);
     }
 
     /**
@@ -46,12 +48,29 @@ public class CommandClear extends EntityTracerCommand {
      *
      * @param player Player
      * @param args   Arguments
+     * @throws CommandException command exception
      */
     @Override
-    public void execute(Player player, String[] args) {
-        TracerUser tu = TracerUser.getUser(player.getUniqueId());
+    public void execute(Player player, String[] args) throws CommandException {
+        TracerUser tu;
 
-        tu.clearParticles();
-        player.sendMessage("Cleared particles");
+        if (args.length < 1) {
+            tu = TracerUser.getUser(player.getUniqueId());
+
+            tu.clearParticles();
+            player.sendMessage("Cleared particles");
+        } else if (args[0].equals("tnt")) {
+            tu = TracerUser.getUser(player.getUniqueId());
+
+            tu.clearTNT();
+            player.sendMessage("Cleared TNT particles");
+        } else if (args[0].equals("sand")) {
+            tu = TracerUser.getUser(player.getUniqueId());
+
+            tu.clearSand();
+            player.sendMessage("Cleared sand particles");
+        } else {
+            throw new CommandException("Invalid toggle command");
+        }
     }
 }

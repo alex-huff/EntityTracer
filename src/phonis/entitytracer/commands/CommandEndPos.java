@@ -4,22 +4,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import phonis.entitytracer.serializable.TracerUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CommandEndPos extends EntityTracerCommand {
-    private List<String> traceTypes = new ArrayList<>();
-
     /**
      * CommandEndPos constructor that calls the EntityTracerCommand super constructor
      */
     public CommandEndPos() {
         super("endpos");
         this.addAlias("ep");
-        traceTypes.add("tnt");
-        traceTypes.add("sand");
-        traceTypes.add("t");
-        traceTypes.add("s");
+        this.args.add("tnt");
+        this.args.add("sand");
     }
 
     /**
@@ -30,19 +25,7 @@ public class CommandEndPos extends EntityTracerCommand {
      */
     @Override
     public List<String> topTabComplete(String[] args) {
-        List<String> ret = new ArrayList<>();
-
-        if (args.length > 1) {
-            return ret;
-        }
-
-        for (String traceType : this.traceTypes) {
-            if (traceType.startsWith(args[0])) {
-                ret.add(traceType);
-            }
-        }
-
-        return ret;
+        return this.argsAutocomplete(args, 1);
     }
 
     /**
@@ -70,12 +53,12 @@ public class CommandEndPos extends EntityTracerCommand {
 
         if (args.length < 1) {
             throw new CommandException("No arguments given; Choices are: TNT and sand");
-        } else if (args[0].equals("tnt") || args[0].equals("t")) {
+        } else if (args[0].equals("tnt")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleEndPosTNT();
             player.sendMessage("TNT end positions are now: " + tu.isEndPosTNT());
-        } else if (args[0].equals("sand") || args[0].equals("s")) {
+        } else if (args[0].equals("sand")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleEndPosSand();

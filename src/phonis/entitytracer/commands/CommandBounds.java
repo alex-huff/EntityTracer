@@ -2,21 +2,22 @@ package phonis.entitytracer.commands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import phonis.entitytracer.serializable.TracerUser;
 
 import java.util.List;
 
 /**
- * EntityTracerCommand for printing a user's settings
+ * EntityTracerCommand that handles bounds related settings
  */
-public class CommandPrintSettings extends EntityTracerCommand {
+public class CommandBounds extends EntityTracerCommand {
     /**
-     * CommandPrintSettings constructor that calls the EntityTracerCommand super constructor
+     * CommandSettings constructor that calls the EntityTracerCommand super constructor
      */
-    public CommandPrintSettings() {
-        super("printsettings");
-        this.addAlias("settings");
-        this.addAlias("ps");
+    public CommandBounds() {
+        super("bounds");
+        this.addAlias("b");
+        this.addSubCommand(new CommandMinDistance());
+        this.addSubCommand(new CommandMaxParticles());
+        this.addSubCommand(new CommandTraceRadius());
     }
 
     /**
@@ -47,11 +48,14 @@ public class CommandPrintSettings extends EntityTracerCommand {
      *
      * @param player Player
      * @param args   Arguments
+     * @throws CommandException command exception
      */
     @Override
-    public void execute(Player player, String[] args) {
-        TracerUser tu = TracerUser.getUser(player.getUniqueId());
-
-        player.sendMessage(tu.printSettings());
+    public void execute(Player player, String[] args) throws CommandException {
+        if (args.length == 0) {
+            player.sendMessage(this.getCommandString(0));
+        } else {
+            throw new CommandException("Incorrect usage of command " + this.getName());
+        }
     }
 }

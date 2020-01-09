@@ -192,7 +192,7 @@ public class Tick implements Runnable {
                                                 true
                                             )
                                         );
-                                    } else {
+                                    } else if (change.getChangeType().compareTo(ChangeType.NORMAL) == 0) {
                                         tu.addTrace(
                                             new TNTTrace(
                                                 change.getStart(),
@@ -214,7 +214,7 @@ public class Tick implements Runnable {
                                                 true
                                             )
                                         );
-                                    } else {
+                                    } else if (change.getChangeType().compareTo(ChangeType.NORMAL) == 0) {
                                         tu.addTrace(
                                             new SandTrace(
                                                 change.getStart(),

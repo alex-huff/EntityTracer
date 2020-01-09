@@ -1,5 +1,6 @@
 package phonis.entitytracer.commands;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import phonis.entitytracer.EntityTracer;
@@ -14,6 +15,7 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
     private final String name;
     private Set<EntityTracerCommand> subCommands = new HashSet<>();
     private Set<String> aliases = new HashSet<>();
+    protected Set<String> args = new HashSet<>();
 
     /**
      * EntityTracerCommand constructor takes in name of command
@@ -94,6 +96,28 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
     }
 
     /**
+     * Tab complete for set args
+     *
+     * @param args Arguments given
+     * @return List<String>
+     */
+    public List<String> argsAutocomplete(String[] args, int size) {
+        List<String> ret = new ArrayList<>();
+
+        if (args.length > size) {
+            return ret;
+        }
+
+        for (String traceType : this.args) {
+            if (traceType.startsWith(args[args.length - 1])) {
+                ret.add(traceType);
+            }
+        }
+
+        return ret;
+    }
+
+    /**
      * Tab complete to be overridden by top-level commands
      *
      * @param args Arguments
@@ -129,9 +153,9 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
 
                 if (subName.startsWith(args[0])) ret.add(subName);
 
-                for (String alias : subETC.aliases) {
-                    if (alias.startsWith(args[0])) ret.add(alias);
-                }
+//                for (String alias : subETC.aliases) {
+//                    if (alias.startsWith(args[0])) ret.add(alias);
+//                }
             }
 
             return ret;
@@ -139,9 +163,9 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
 
         if (this.getName().startsWith(label)) ret.add(this.getName());
 
-        for (String alias : this.aliases) {
-            if (alias.startsWith(label)) ret.add(alias);
-        }
+//        for (String alias : this.aliases) {
+//            if (alias.startsWith(label)) ret.add(alias);
+//        }
 
         return ret;
     }
@@ -255,5 +279,39 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Gets string representing commands
+     *
+     * @param depth recursion depth
+     * @return String
+     */
+    public String getCommandString(int depth) {
+        StringBuilder message = new StringBuilder();
+
+        for (int i = 0; i < depth; i++) message.append("   ");
+        String name = "" + ChatColor.RESET + ChatColor.GRAY + this.getName();
+        message.append(name).append("\n");
+
+        depth += 1;
+
+        for (String arg : this.args) {
+            for (int i = 0; i < depth; i++) message.append("   ");
+            message.append(arg).append("\n");
+        }
+
+        if (!this.subCommands.isEmpty()) {
+            for (int i = 0; i < depth; i++) message.append("   ");
+            String subStr = "" + ChatColor.BOLD + ChatColor.AQUA + "Sub-commands: \n";
+            message.append(subStr);
+            depth += 1;
+
+            for (EntityTracerCommand etc : this.subCommands) {
+                message.append(etc.getCommandString(depth));
+            }
+        }
+
+        return message.toString();
     }
 }

@@ -4,15 +4,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import phonis.entitytracer.serializable.TracerUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * EntityTracerCommand used for toggling values
  */
 public class CommandToggle extends EntityTracerCommand {
-    private List<String> traceTypes = new ArrayList<>();
-
     /**
      * CommandToggle constructor that calls the EntityTracerCommand super constructor
      */
@@ -21,10 +18,8 @@ public class CommandToggle extends EntityTracerCommand {
         this.addSubCommand(new CommandEndPos());
         this.addSubCommand(new CommandTickConnect());
         this.addAlias("tog");
-        traceTypes.add("tnt");
-        traceTypes.add("sand");
-        traceTypes.add("t");
-        traceTypes.add("s");
+        this.args.add("tnt");
+        this.args.add("sand");
     }
 
     /**
@@ -35,19 +30,7 @@ public class CommandToggle extends EntityTracerCommand {
      */
     @Override
     public List<String> topTabComplete(String[] args) {
-        List<String> ret = new ArrayList<>();
-
-        if (args.length > 1) {
-            return ret;
-        }
-
-        for (String traceType : this.traceTypes) {
-            if (traceType.startsWith(args[0])) {
-                ret.add(traceType);
-            }
-        }
-
-        return ret;
+        return this.argsAutocomplete(args, 1);
     }
 
     /**
@@ -67,9 +50,10 @@ public class CommandToggle extends EntityTracerCommand {
      *
      * @param player Player
      * @param args   Arguments
+     * @throws CommandException command exception
      */
     @Override
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, String[] args) throws CommandException {
         TracerUser tu;
 
         if (args.length < 1) {
@@ -77,16 +61,18 @@ public class CommandToggle extends EntityTracerCommand {
 
             tu.toggleTrace();
             player.sendMessage("Tracer is now: " + tu.isTrace());
-        } else if (args[0].equals("tnt") || args[0].equals("t")) {
+        } else if (args[0].equals("tnt")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleTraceTNT();
             player.sendMessage("TNT tracing is now: " + tu.isTraceTNT());
-        } else if (args[0].equals("sand") || args[0].equals("s")) {
+        } else if (args[0].equals("sand")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleTraceSand();
             player.sendMessage("Sand tracing is now: " + tu.isTraceSand());
+        } else {
+            throw new CommandException("Invalid toggle command");
         }
     }
 }

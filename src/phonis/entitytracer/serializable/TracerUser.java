@@ -1,9 +1,11 @@
 package phonis.entitytracer.serializable;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import phonis.entitytracer.EntityTracer;
 import phonis.entitytracer.trace.ParticleLocation;
 import phonis.entitytracer.trace.ParticleLocationComparator;
+import phonis.entitytracer.trace.ParticleType;
 import phonis.entitytracer.trace.Trace;
 
 import java.io.Serializable;
@@ -295,7 +297,27 @@ public class TracerUser implements Serializable {
      * Clears particles from user
      */
     public void clearParticles() {
+        this.unNull();
+
         this.pLocs.clear();
+    }
+
+    /**
+     * Clear TNT particles
+     */
+    public void clearTNT() {
+        this.unNull();
+
+        this.pLocs.removeIf(pLocation -> pLocation.getType().compareTo(ParticleType.TNT) == 0 || pLocation.getType().compareTo(ParticleType.TNTENDPOS) == 0);
+    }
+
+    /**
+     * Clear Sand particles
+     */
+    public void clearSand() {
+        this.unNull();
+
+        this.pLocs.removeIf(pLocation -> pLocation.getType().compareTo(ParticleType.SAND) == 0 || pLocation.getType().compareTo(ParticleType.SANDENDPOS) == 0);
     }
 
     /**
@@ -359,5 +381,46 @@ public class TracerUser implements Serializable {
 
             this.viewRadius = loc.distance(pq.peek().getLocation());
         }
+    }
+
+    /**
+     * Get string representing user's settings
+     *
+     * @return String
+     */
+    public String printSettings() {
+        String message = "" + ChatColor.BOLD + ChatColor.BLUE + "Settings:" + ChatColor.RESET + "\n";
+
+        message +=
+            ChatColor.AQUA + "Trace enabled:             " + ChatColor.WHITE + this.isTrace() + "\n" +
+                ChatColor.AQUA + "Sand trace enabled:        " + ChatColor.WHITE + this.isTraceSand() + "\n" +
+                ChatColor.AQUA + "TNT trace enabled:         " + ChatColor.WHITE + this.isTraceTNT() + "\n" +
+                ChatColor.AQUA + "Sand end position enabled: " + ChatColor.WHITE + this.isEndPosSand() + "\n" +
+                ChatColor.AQUA + "TNT end position enabled:  " + ChatColor.WHITE + this.isEndPosTNT() + "\n" +
+                ChatColor.AQUA + "Connect ticks:             " + ChatColor.WHITE + this.isTickConnect() + "\n" +
+                ChatColor.AQUA + "Minimum distance traveled: " + ChatColor.WHITE + this.getMinDistance() + "\n" +
+                ChatColor.AQUA + "Trace radius:              " + ChatColor.WHITE + this.getTraceRadius() + "\n" +
+                ChatColor.AQUA + "Maximum particles:         " + ChatColor.WHITE + this.getMaxParticles() + "\n" +
+                ChatColor.AQUA + "Trace time in ticks:       " + ChatColor.WHITE + this.getTraceTime() + "\n";
+
+        return message;
+    }
+
+    /**
+     * Copies the settings from another user
+     *
+     * @param other TracerUser
+     */
+    public void copySettings(TracerUser other) {
+        this.trace = other.trace;
+        this.traceSand = other.traceSand;
+        this.traceTNT = other.traceTNT;
+        this.endPosSand = other.endPosSand;
+        this.endPosTNT = other.endPosTNT;
+        this.tickConnect = other.tickConnect;
+        this.minDistance = other.minDistance;
+        this.traceRadius = other.traceRadius;
+        this.maxParticles = other.maxParticles;
+        this.traceTime = other.traceTime;
     }
 }
