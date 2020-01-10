@@ -5,7 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import phonis.entitytracer.EntityTracer;
 import phonis.entitytracer.tasks.Tick;
 import phonis.entitytracer.trace.ChangeType;
@@ -29,7 +29,7 @@ public class ExplosionEvent implements Listener {
      * @param event EntityExplodeEvent
      */
     @EventHandler
-    public void onExplosionEvent(EntityExplodeEvent event) {
+    public void onExplosionEvent(ExplosionPrimeEvent event) {
         Entity entity = event.getEntity();
 
         if (entity.getType().compareTo(EntityType.PRIMED_TNT) == 0) {

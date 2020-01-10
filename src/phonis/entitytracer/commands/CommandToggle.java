@@ -17,6 +17,7 @@ public class CommandToggle extends EntityTracerCommand {
         super("toggle");
         this.addSubCommand(new CommandEndPos());
         this.addSubCommand(new CommandTickConnect());
+        this.addAlias("t");
         this.addAlias("tog");
         this.args.add("tnt");
         this.args.add("sand");
@@ -61,12 +62,12 @@ public class CommandToggle extends EntityTracerCommand {
 
             tu.toggleTrace();
             player.sendMessage("Tracer is now: " + tu.isTrace());
-        } else if (args[0].equals("tnt")) {
+        } else if (args[0].equals("tnt") || args[0].equals("t")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleTraceTNT();
             player.sendMessage("TNT tracing is now: " + tu.isTraceTNT());
-        } else if (args[0].equals("sand")) {
+        } else if (args[0].equals("sand") || args[0].equals("s")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleTraceSand();

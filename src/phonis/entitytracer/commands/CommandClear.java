@@ -59,12 +59,12 @@ public class CommandClear extends EntityTracerCommand {
 
             tu.clearParticles();
             player.sendMessage("Cleared particles");
-        } else if (args[0].equals("tnt")) {
+        } else if (args[0].equals("tnt") || args[0].equals("t")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.clearTNT();
             player.sendMessage("Cleared TNT particles");
-        } else if (args[0].equals("sand")) {
+        } else if (args[0].equals("sand") || args[0].equals("s")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.clearSand();

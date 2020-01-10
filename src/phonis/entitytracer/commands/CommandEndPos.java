@@ -12,6 +12,7 @@ public class CommandEndPos extends EntityTracerCommand {
      */
     public CommandEndPos() {
         super("endpos");
+        this.addAlias("e");
         this.addAlias("ep");
         this.args.add("tnt");
         this.args.add("sand");
@@ -52,12 +53,12 @@ public class CommandEndPos extends EntityTracerCommand {
 
         if (args.length < 1) {
             player.sendMessage(this.getCommandString(0));
-        } else if (args[0].equals("tnt")) {
+        } else if (args[0].equals("tnt") || args[0].equals("t")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleEndPosTNT();
             player.sendMessage("TNT end positions are now: " + tu.isEndPosTNT());
-        } else if (args[0].equals("sand")) {
+        } else if (args[0].equals("sand") || args[0].equals("s")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
             tu.toggleEndPosSand();
