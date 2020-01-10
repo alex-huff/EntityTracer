@@ -14,9 +14,8 @@ public class CommandPrintSettings extends EntityTracerCommand {
      * CommandPrintSettings constructor that calls the EntityTracerCommand super constructor
      */
     public CommandPrintSettings() {
-        super("printsettings");
-        this.addAlias("settings");
-        this.addAlias("ps");
+        super("print");
+        this.addAlias("p");
     }
 
     /**
