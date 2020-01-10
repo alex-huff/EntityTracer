@@ -16,6 +16,7 @@ public class CommandMaxParticles extends EntityTracerCommand {
     public CommandMaxParticles() {
         super("maxparticles");
         this.addAlias("mp");
+        this.args.add("(Particle amount per 5 ticks)");
     }
 
     /**

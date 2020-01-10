@@ -16,6 +16,7 @@ public class CommandMinDistance extends EntityTracerCommand {
     public CommandMinDistance() {
         super("mindistance");
         this.addAlias("md");
+        this.args.add("(Minimum distance entity must travel for tracking)");
     }
 
     /**

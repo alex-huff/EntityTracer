@@ -16,6 +16,7 @@ public class CommandTraceTime extends EntityTracerCommand {
     public CommandTraceTime() {
         super("tracetime");
         this.addAlias("tt");
+        this.args.add("(Ticks a trace will last)");
     }
 
     /**

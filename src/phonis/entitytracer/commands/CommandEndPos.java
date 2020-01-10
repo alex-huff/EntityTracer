@@ -45,14 +45,13 @@ public class CommandEndPos extends EntityTracerCommand {
      *
      * @param player Player
      * @param args   Arguments
-     * @throws CommandException command exception
      */
     @Override
-    public void execute(Player player, String[] args) throws CommandException {
+    public void execute(Player player, String[] args) {
         TracerUser tu;
 
         if (args.length < 1) {
-            throw new CommandException("No arguments given; Choices are: TNT and sand");
+            player.sendMessage(this.getCommandString(0));
         } else if (args[0].equals("tnt")) {
             tu = TracerUser.getUser(player.getUniqueId());
 

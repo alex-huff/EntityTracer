@@ -20,6 +20,7 @@ public class CommandCopySettings extends EntityTracerCommand {
         super("copysettings");
         this.addAlias("copy");
         this.addAlias("cs");
+        this.args.add("(Player)");
     }
 
     /**

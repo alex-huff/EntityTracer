@@ -16,6 +16,7 @@ public class CommandTraceRadius extends EntityTracerCommand {
     public CommandTraceRadius() {
         super("traceraidus");
         this.addAlias("tr");
+        this.args.add("(Radius for tracing)");
     }
 
     /**

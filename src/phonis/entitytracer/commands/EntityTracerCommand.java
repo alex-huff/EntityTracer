@@ -291,8 +291,9 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
         StringBuilder message = new StringBuilder();
 
         for (int i = 0; i < depth; i++) message.append("   ");
-        String name = "" + ChatColor.RESET + ChatColor.GRAY + this.getName();
-        message.append(name).append("\n");
+
+        String name = "" + ChatColor.RESET + ChatColor.AQUA + this.getName() + "\n" + ChatColor.GRAY;
+        message.append(name);
 
         depth += 1;
 
@@ -302,11 +303,6 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
         }
 
         if (!this.subCommands.isEmpty()) {
-            for (int i = 0; i < depth; i++) message.append("   ");
-            String subStr = "" + ChatColor.BOLD + ChatColor.AQUA + "Sub-commands: \n";
-            message.append(subStr);
-            depth += 1;
-
             for (EntityTracerCommand etc : this.subCommands) {
                 message.append(etc.getCommandString(depth));
             }
