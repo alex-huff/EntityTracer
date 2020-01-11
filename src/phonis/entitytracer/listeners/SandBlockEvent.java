@@ -36,7 +36,7 @@ public class SandBlockEvent implements Listener {
 
             if (entity.getType().compareTo(EntityType.FALLING_BLOCK) == 0) {
                 Location loc = entity.getLocation();
-                LocationChange change = new LocationChange(entity.getWorld(), loc, loc, EntityType.FALLING_BLOCK, ChangeType.EXPLOSION);
+                LocationChange change = new LocationChange(entity.getWorld(), loc, loc, EntityType.FALLING_BLOCK, ChangeType.EXPLOSION, entity.getVelocity().length());
 
                 this.tick.addChange(change);
             }

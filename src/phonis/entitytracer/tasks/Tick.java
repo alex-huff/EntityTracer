@@ -143,7 +143,6 @@ public class Tick implements Runnable {
      * @param player Player
      */
     private void sendPackets(TracerUser tu, Player player) {
-        tu.updateRadius(player.getLocation());
         PlayerConnection connection = ((CraftPlayer) player).getHandle().playerConnection;
         Iterator<ParticleLocation> it = tu.getParticleLocations().iterator();
 
@@ -156,7 +155,7 @@ public class Tick implements Runnable {
                         EnumParticle.REDSTONE,
                         true,
                         (float) pLocation.getLocation().getX(),
-                        (float) pLocation.getLocation().getY() + 0.49F,
+                        (float) pLocation.getLocation().getY(),
                         (float) pLocation.getLocation().getZ(),
                         pLocation.getType().getRGB().getR() / 255f,
                         pLocation.getType().getRGB().getG() / 255f,
@@ -193,76 +192,53 @@ public class Tick implements Runnable {
                 Player player = Bukkit.getPlayer(uuid);
 
                 if (player != null) {
-                    World world = player.getWorld();
-
                     for (LocationChange change : this.changes) {
-                        if (change.getWorld() == world && (change.getStart().distance(change.getFinish()) >= tu.getMinDistance() || change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0)) {
-                            if (player.getLocation().distance(change.getStart()) <= tu.getTraceRadius()) {
-                                if (change.getType().compareTo(EntityType.PRIMED_TNT) == 0 && tu.isTraceTNT()) {
-                                    if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
-                                        boolean finish = false;
+                        if (
+                            change.getWorld() == player.getWorld()
+                                && change.getVelocity() >= tu.getMinDistance()
+                                && player.getLocation().distance(change.getStart()) <= tu.getTraceRadius()
+                        ) {
+                            if (change.getType().compareTo(EntityType.PRIMED_TNT) == 0 && tu.isTraceTNT()) {
+                                boolean start = false;
+                                boolean finish = false;
 
-                                        if (tu.isEndPosTNT()) {
-                                            finish = true;
-                                        }
-
-                                        tu.addTrace(
-                                            new TNTTrace(change.getStart(), change.getFinish(), false, finish)
-                                        );
-                                    } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
-                                        tu.addTrace(
-                                            new TNTTrace(
-                                                change.getStart(),
-                                                change.getFinish(),
-                                                true,
-                                                false
-                                            )
-                                        );
-                                    } else {
-                                        tu.addTrace(
-                                            new TNTTrace(
-                                                change.getStart(),
-                                                change.getFinish(),
-                                                false,
-                                                false
-                                            )
-                                        );
-                                    }
-                                } else if (change.getType().compareTo(EntityType.FALLING_BLOCK) == 0 && tu.isTraceSand()) {
-                                    if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
-                                        boolean finish = false;
-
-                                        if (tu.isEndPosSand()) {
-                                            finish = true;
-                                        }
-
-                                        tu.addTrace(
-                                            new SandTrace(change.getStart(), change.getFinish(), false, finish)
-                                        );
-                                    } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
-                                        tu.addTrace(
-                                            new SandTrace(
-                                                change.getStart(),
-                                                change.getFinish(),
-                                                true,
-                                                false
-                                            )
-                                        );
-                                    } else {
-                                        tu.addTrace(
-                                            new SandTrace(
-                                                change.getStart(),
-                                                change.getFinish(),
-                                                false,
-                                                false
-                                            )
-                                        );
-                                    }
+                                if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
+                                    finish = tu.isEndPosTNT();
+                                } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
+                                    start = tu.isStartPosTNT();
                                 }
+
+                                tu.addTrace(
+                                    new TNTTrace(
+                                        change.getStart().clone().add(0, .49, 0),
+                                        change.getFinish().clone().add(0, .49, 0),
+                                        start,
+                                        finish
+                                    )
+                                );
+                            } else if (change.getType().compareTo(EntityType.FALLING_BLOCK) == 0 && tu.isTraceSand()) {
+                                boolean start = false;
+                                boolean finish = false;
+
+                                if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
+                                    finish = tu.isEndPosSand();
+                                } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
+                                    start = tu.isStartPosSand();
+                                }
+
+                                tu.addTrace(
+                                    new SandTrace(
+                                        change.getStart().clone().add(0, .49, 0),
+                                        change.getFinish().clone().add(0, .49, 0),
+                                        start,
+                                        finish
+                                    )
+                                );
                             }
                         }
                     }
 
+                    tu.updateRadius(player.getLocation());
                     this.sendPackets(tu, player);
                 }
             }

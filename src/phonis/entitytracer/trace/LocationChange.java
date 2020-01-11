@@ -15,6 +15,7 @@ public class LocationChange {
     private Location finish;
     private EntityType type;
     private ChangeType changeType;
+    private double velocity;
 
     /**
      * LocationChange constructor
@@ -27,10 +28,30 @@ public class LocationChange {
      */
     public LocationChange(World world, Location start, Location finish, EntityType type, ChangeType changeType) {
         this.world = world;
-        this.start = start.clone();
-        this.finish = finish.clone();
+        this.start = start;
+        this.finish = finish;
         this.type = type;
         this.changeType = changeType;
+        this.velocity = this.start.distance(this.finish);
+    }
+
+    /**
+     * LocationChange constructor
+     *
+     * @param world      World
+     * @param start      start location
+     * @param finish     finish location
+     * @param type       entity type
+     * @param changeType change type
+     * @param velocity   speed of the entity
+     */
+    public LocationChange(World world, Location start, Location finish, EntityType type, ChangeType changeType, double velocity) {
+        this.world = world;
+        this.start = start;
+        this.finish = finish;
+        this.type = type;
+        this.changeType = changeType;
+        this.velocity = velocity;
     }
 
     /**
@@ -101,6 +122,15 @@ public class LocationChange {
      */
     public Location getFinish() {
         return this.finish;
+    }
+
+    /**
+     * Gets change velocity
+     *
+     * @return double
+     */
+    public double getVelocity() {
+        return this.velocity;
     }
 
     /**
