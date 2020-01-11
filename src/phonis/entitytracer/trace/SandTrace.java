@@ -5,7 +5,7 @@ import org.bukkit.Location;
 /**
  * Trace representing sand movement
  */
-public class SandTrace extends EntityMoveTrace {
+public class SandTrace extends BlockMoveTrace {
     /**
      * SandTrace constructor that calls the Trace super constructor
      *

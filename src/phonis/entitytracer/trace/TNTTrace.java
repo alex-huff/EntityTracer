@@ -5,7 +5,7 @@ import org.bukkit.Location;
 /**
  * Trace representing tnt movement
  */
-public class TNTTrace extends EntityMoveTrace {
+public class TNTTrace extends BlockMoveTrace {
     /**
      * TNTTrace constructor that calls the Trace super constructor
      *

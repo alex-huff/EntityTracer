@@ -22,6 +22,8 @@ public class TracerUser implements Serializable {
     private boolean traceTNT;
     private boolean endPosSand;
     private boolean endPosTNT;
+    private boolean startPosSand;
+    private boolean startPosTNT;
     private boolean tickConnect;
     private transient boolean unlimitedRadius = false;
     private double minDistance;
@@ -46,12 +48,14 @@ public class TracerUser implements Serializable {
      * @param maxParticles int representing max particles
      * @param traceTime    int representing trace time
      */
-    private TracerUser(boolean trace, boolean traceSand, boolean traceTNT, boolean endPosSand, boolean endPosTNT, boolean tickConnect, double minDistance, double traceRadius, double viewRadius, int maxParticles, int traceTime) {
+    private TracerUser(boolean trace, boolean traceSand, boolean traceTNT, boolean endPosSand, boolean endPosTNT, boolean startPosSand, boolean startPosTNT, boolean tickConnect, double minDistance, double traceRadius, double viewRadius, int maxParticles, int traceTime) {
         this.trace = trace;
         this.traceSand = traceSand;
         this.traceTNT = traceTNT;
         this.endPosSand = endPosSand;
         this.endPosTNT = endPosTNT;
+        this.startPosSand = startPosSand;
+        this.startPosTNT = startPosTNT;
         this.tickConnect = tickConnect;
         this.minDistance = minDistance;
         this.traceRadius = traceRadius;
@@ -64,7 +68,7 @@ public class TracerUser implements Serializable {
      * Private default constructor for TracerUser
      */
     private TracerUser() {
-        this(false, true, true, false, true, true, 5.0D, 100D, 0D, 1000, 100);
+        this(false, true, true, false, true, false, true, true, 5.0D, 100D, 0D, 1000, 100);
     }
 
     /**
@@ -165,6 +169,38 @@ public class TracerUser implements Serializable {
      */
     public void toggleEndPosTNT() {
         this.endPosTNT = !this.endPosTNT;
+    }
+
+    /**
+     * Determines whether user is tracing sand start positions
+     *
+     * @return boolean
+     */
+    public boolean isStartPosSand() {
+        return startPosSand;
+    }
+
+    /**
+     * Toggle user sand start positions tracing
+     */
+    public void toggleStartPosSand() {
+        this.startPosSand = !this.startPosSand;
+    }
+
+    /**
+     * Determines whether user is tracing tnt start positions
+     *
+     * @return boolean
+     */
+    public boolean isStartPosTNT() {
+        return startPosTNT;
+    }
+
+    /**
+     * Toggle user start end positions tracing
+     */
+    public void toggleStartPosTNT() {
+        this.startPosTNT = !this.startPosTNT;
     }
 
     /**
@@ -395,8 +431,10 @@ public class TracerUser implements Serializable {
             ChatColor.AQUA + "Trace enabled:             " + ChatColor.WHITE + this.isTrace() + "\n" +
                 ChatColor.AQUA + "Sand trace enabled:        " + ChatColor.WHITE + this.isTraceSand() + "\n" +
                 ChatColor.AQUA + "TNT trace enabled:         " + ChatColor.WHITE + this.isTraceTNT() + "\n" +
-                ChatColor.AQUA + "Sand end position enabled: " + ChatColor.WHITE + this.isEndPosSand() + "\n" +
-                ChatColor.AQUA + "TNT end position enabled:  " + ChatColor.WHITE + this.isEndPosTNT() + "\n" +
+                ChatColor.AQUA + "Sand end positions:        " + ChatColor.WHITE + this.isEndPosSand() + "\n" +
+                ChatColor.AQUA + "TNT end positions:         " + ChatColor.WHITE + this.isEndPosTNT() + "\n" +
+                ChatColor.AQUA + "Sand start positions:      " + ChatColor.WHITE + this.isStartPosSand() + "\n" +
+                ChatColor.AQUA + "TNT start positions:       " + ChatColor.WHITE + this.isStartPosTNT() + "\n" +
                 ChatColor.AQUA + "Connect ticks:             " + ChatColor.WHITE + this.isTickConnect() + "\n" +
                 ChatColor.AQUA + "Minimum distance traveled: " + ChatColor.WHITE + this.getMinDistance() + "\n" +
                 ChatColor.AQUA + "Trace radius:              " + ChatColor.WHITE + this.getTraceRadius() + "\n" +
@@ -417,6 +455,8 @@ public class TracerUser implements Serializable {
         this.traceTNT = other.traceTNT;
         this.endPosSand = other.endPosSand;
         this.endPosTNT = other.endPosTNT;
+        this.startPosSand = other.startPosSand;
+        this.startPosTNT = other.startPosTNT;
         this.tickConnect = other.tickConnect;
         this.minDistance = other.minDistance;
         this.traceRadius = other.traceRadius;

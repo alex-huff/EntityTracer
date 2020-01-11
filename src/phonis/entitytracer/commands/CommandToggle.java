@@ -16,6 +16,7 @@ public class CommandToggle extends EntityTracerCommand {
     public CommandToggle() {
         super("toggle");
         this.addSubCommand(new CommandEndPos());
+        this.addSubCommand(new CommandStartPos());
         this.addSubCommand(new CommandTickConnect());
         this.addAlias("t");
         this.addAlias("tog");

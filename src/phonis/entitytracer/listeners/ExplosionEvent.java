@@ -45,7 +45,7 @@ public class ExplosionEvent implements Listener {
                 oldLoc = prevTick2;
             }
 
-            LocationChange change = new LocationChange(entity.getWorld(), oldLoc, loc, entity.getType(), ChangeType.EXPLOSION);
+            LocationChange change = new LocationChange(entity.getWorld(), oldLoc, loc, entity.getType(), ChangeType.EXPLOSION, entity.getVelocity().length());
 
             this.tick.addChange(change);
         }

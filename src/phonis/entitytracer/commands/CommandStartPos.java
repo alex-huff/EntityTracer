@@ -7,16 +7,16 @@ import phonis.entitytracer.serializable.TracerUser;
 import java.util.List;
 
 /**
- * EntityTracerCommand that toggles end position tracking
+ * EntityTracerCommand that toggles start position tracking
  */
-public class CommandEndPos extends EntityTracerCommand {
+public class CommandStartPos extends EntityTracerCommand {
     /**
-     * CommandEndPos constructor that calls the EntityTracerCommand super constructor
+     * CommandStartPos constructor that calls the EntityTracerCommand super constructor
      */
-    public CommandEndPos() {
-        super("endpos");
-        this.addAlias("e");
-        this.addAlias("ep");
+    public CommandStartPos() {
+        super("startpos");
+        this.addAlias("s");
+        this.addAlias("sp");
         this.args.add("tnt");
         this.args.add("sand");
     }
@@ -59,13 +59,13 @@ public class CommandEndPos extends EntityTracerCommand {
         } else if (args[0].equals("tnt") || args[0].equals("t")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
-            tu.toggleEndPosTNT();
-            player.sendMessage("TNT end positions are now: " + tu.isEndPosTNT());
+            tu.toggleStartPosTNT();
+            player.sendMessage("TNT start positions are now: " + tu.isStartPosTNT());
         } else if (args[0].equals("sand") || args[0].equals("s")) {
             tu = TracerUser.getUser(player.getUniqueId());
 
-            tu.toggleEndPosSand();
-            player.sendMessage("Sand end positions are now: " + tu.isEndPosSand());
+            tu.toggleStartPosSand();
+            player.sendMessage("Sand start positions are now: " + tu.isStartPosSand());
         }
     }
 }

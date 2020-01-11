@@ -43,27 +43,27 @@ public class EntityLocation {
         //this.round(this.location);
     }
 
-    /**
-     * Truncate to n decimal places
-     *
-     * @param a       original
-     * @param decimal places
-     * @return double
-     */
-    private static double roundToDecimal(double a, int decimal) {
-        double shiftLeft = a * Math.pow(10, decimal);
-        long rounded = (long) shiftLeft;
-        return (rounded / Math.pow(10, decimal));
-    }
-
-    /**
-     * Round the locations so reverse engineered locations can be determined even with floating point error
-     */
-    private void round(Location loc) {
-        loc.setX(EntityLocation.roundToDecimal(loc.getX(), 3));
-        loc.setY(EntityLocation.roundToDecimal(loc.getY(), 3));
-        loc.setZ(EntityLocation.roundToDecimal(loc.getZ(), 3));
-    }
+//    /**
+//     * Truncate to n decimal places
+//     *
+//     * @param a       original
+//     * @param decimal places
+//     * @return double
+//     */
+//    private static double roundToDecimal(double a, int decimal) {
+//        double shiftLeft = a * Math.pow(10, decimal);
+//        long rounded = (long) shiftLeft;
+//        return (rounded / Math.pow(10, decimal));
+//    }
+//
+//    /**
+//     * Round the locations so reverse engineered locations can be determined even with floating point error
+//     */
+//    private void round(Location loc) {
+//        loc.setX(EntityLocation.roundToDecimal(loc.getX(), 3));
+//        loc.setY(EntityLocation.roundToDecimal(loc.getY(), 3));
+//        loc.setZ(EntityLocation.roundToDecimal(loc.getZ(), 3));
+//    }
 
     /**
      * Gets type of entity

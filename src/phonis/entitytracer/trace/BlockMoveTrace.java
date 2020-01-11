@@ -9,19 +9,19 @@ import java.util.List;
 /**
  * Trace representing tnt and sand movement
  */
-public abstract class EntityMoveTrace extends Trace {
+public abstract class BlockMoveTrace extends Trace {
     private boolean isStart;
     private boolean isFinish;
 
     /**
-     * EntityMoveTrace constructor that calls the Trace super constructor
+     * BlockMoveTrace constructor that calls the Trace super constructor
      *
      * @param start   start location
      * @param finish  finish location
      * @param isStart start of entity's movement
      */
-    public EntityMoveTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
-        super(start, finish);
+    public BlockMoveTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
+        super(start.clone().add(0, .49, 0), finish.clone().add(0, .49, 0));
 
         this.isStart = isStart;
         this.isFinish = isFinish;
