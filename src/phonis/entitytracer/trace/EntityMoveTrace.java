@@ -11,6 +11,7 @@ import java.util.List;
  */
 public abstract class EntityMoveTrace extends Trace {
     private boolean isStart;
+    private boolean isFinish;
 
     /**
      * EntityMoveTrace constructor that calls the Trace super constructor
@@ -19,18 +20,26 @@ public abstract class EntityMoveTrace extends Trace {
      * @param finish  finish location
      * @param isStart start of entity's movement
      */
-    public EntityMoveTrace(Location start, Location finish, boolean isStart) {
+    public EntityMoveTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
         super(start, finish);
 
         this.isStart = isStart;
+        this.isFinish = isFinish;
     }
+
+    /**
+     * Type of particle
+     *
+     * @return ParticleType
+     */
+    protected abstract ParticleType getType();
 
     /**
      * Type of end position
      *
      * @return ParticleType
      */
-    protected abstract ParticleType getType();
+    protected abstract ParticleType getEndType();
 
     /**
      * Method extended from Trace
@@ -202,6 +211,18 @@ public abstract class EntityMoveTrace extends Trace {
                 this.getType()
             )
         );
+
+        if (isFinish) {
+            for (Offset offset : Trace.vertices) {
+                ret.add(
+                    new ParticleLocation(
+                        finish.clone().add(offset.getX(), offset.getY(), offset.getZ()),
+                        life,
+                        this.getEndType()
+                    )
+                );
+            }
+        }
 
         return ret;
     }

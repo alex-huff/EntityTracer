@@ -21,6 +21,7 @@ import java.util.*;
  */
 public class Tick implements Runnable {
     private Set<LocationChange> changes = new HashSet<>();
+    public Set<EntityLocation> lastTicks = new HashSet<>();
     private Map<Integer, EntityLocation> locations = new HashMap<>();
     private EntityTracer entityTracer;
     private int tickCount = 0;
@@ -30,6 +31,15 @@ public class Tick implements Runnable {
      */
     public Tick(EntityTracer entityTracer) {
         this.entityTracer = entityTracer;
+    }
+
+    /**
+     * Get entity changes
+     *
+     * @return Set<LocationChange>
+     */
+    public Set<EntityLocation> getLastTicks() {
+        return this.lastTicks;
     }
 
     /**
@@ -57,6 +67,7 @@ public class Tick implements Runnable {
     private void processEntity(World world, Entity entity) {
         Location loc = entity.getLocation();
         int id = entity.getEntityId();
+        EntityLocation el;
 
         if (this.locations.containsKey(id)) {
             Location old = this.locations.get(id).getLocation();
@@ -72,16 +83,24 @@ public class Tick implements Runnable {
                 this.changes.add(change);
             }
 
-            this.locations.put(entity.getEntityId(), new EntityLocation(loc, false));
+            el = new EntityLocation(loc, false, entity.getType());
+
+            if (entity.getType().compareTo(EntityType.PRIMED_TNT) == 0 && entity.getTicksLived() == 80) {
+                this.lastTicks.add(el);
+            }
         } else {
-            this.locations.put(entity.getEntityId(), new EntityLocation(loc, true));
+            el = new EntityLocation(loc, true, entity.getType());
         }
+
+        this.locations.put(entity.getEntityId(), el);
     }
 
     /**
      * Goes through server entities and processes them with processEntity
      */
     private void processEntities() {
+        this.lastTicks.clear();
+
         for (World world : Bukkit.getServer().getWorlds()) {
             for (Entity entity : world.getEntities()) {
                 if (entity.getType().equals(EntityType.FALLING_BLOCK) || entity.getType().equals(EntityType.PRIMED_TNT)) {
@@ -180,45 +199,61 @@ public class Tick implements Runnable {
                         if (change.getWorld() == world && (change.getStart().distance(change.getFinish()) >= tu.getMinDistance() || change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0)) {
                             if (player.getLocation().distance(change.getStart()) <= tu.getTraceRadius()) {
                                 if (change.getType().compareTo(EntityType.PRIMED_TNT) == 0 && tu.isTraceTNT()) {
-                                    if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0 && tu.isEndPosTNT()) {
+                                    if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
+                                        boolean finish = false;
+
+                                        if (tu.isEndPosTNT()) {
+                                            finish = true;
+                                        }
+
                                         tu.addTrace(
-                                            new TNTEndTrace(change.getFinish())
+                                            new TNTTrace(change.getStart(), change.getFinish(), false, finish)
                                         );
                                     } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
                                         tu.addTrace(
                                             new TNTTrace(
                                                 change.getStart(),
                                                 change.getFinish(),
-                                                true
+                                                true,
+                                                false
                                             )
                                         );
-                                    } else if (change.getChangeType().compareTo(ChangeType.NORMAL) == 0) {
+                                    } else {
                                         tu.addTrace(
                                             new TNTTrace(
                                                 change.getStart(),
                                                 change.getFinish(),
+                                                false,
                                                 false
                                             )
                                         );
                                     }
                                 } else if (change.getType().compareTo(EntityType.FALLING_BLOCK) == 0 && tu.isTraceSand()) {
-                                    if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0 && tu.isEndPosSand()) {
+                                    if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
+                                        boolean finish = false;
+
+                                        if (tu.isEndPosSand()) {
+                                            finish = true;
+                                        }
+
                                         tu.addTrace(
-                                            new SandEndTrace(change.getFinish())
+                                            new SandTrace(change.getStart(), change.getFinish(), false, finish)
                                         );
                                     } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
                                         tu.addTrace(
                                             new SandTrace(
                                                 change.getStart(),
                                                 change.getFinish(),
-                                                true
+                                                true,
+                                                false
                                             )
                                         );
-                                    } else if (change.getChangeType().compareTo(ChangeType.NORMAL) == 0) {
+                                    } else {
                                         tu.addTrace(
                                             new SandTrace(
                                                 change.getStart(),
                                                 change.getFinish(),
+                                                false,
                                                 false
                                             )
                                         );

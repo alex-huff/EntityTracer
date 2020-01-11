@@ -13,8 +13,8 @@ public class SandTrace extends EntityMoveTrace {
      * @param finish  finish location
      * @param isStart start of entity's movement
      */
-    public SandTrace(Location start, Location finish, boolean isStart) {
-        super(start, finish, isStart);
+    public SandTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
+        super(start, finish, isStart, isFinish);
     }
 
     /**
@@ -25,5 +25,15 @@ public class SandTrace extends EntityMoveTrace {
     @Override
     protected ParticleType getType() {
         return ParticleType.SAND;
+    }
+
+    /**
+     * Gets end type
+     *
+     * @return ParticleType
+     */
+    @Override
+    protected ParticleType getEndType() {
+        return ParticleType.SANDENDPOS;
     }
 }

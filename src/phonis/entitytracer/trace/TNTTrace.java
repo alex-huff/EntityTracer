@@ -13,8 +13,8 @@ public class TNTTrace extends EntityMoveTrace {
      * @param finish  finish location
      * @param isStart start of entity's movement
      */
-    public TNTTrace(Location start, Location finish, boolean isStart) {
-        super(start, finish, isStart);
+    public TNTTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
+        super(start, finish, isStart, isFinish);
     }
 
     /**
@@ -25,5 +25,15 @@ public class TNTTrace extends EntityMoveTrace {
     @Override
     protected ParticleType getType() {
         return ParticleType.TNT;
+    }
+
+    /**
+     * Gets end type
+     *
+     * @return ParticleType
+     */
+    @Override
+    protected ParticleType getEndType() {
+        return ParticleType.TNTENDPOS;
     }
 }
