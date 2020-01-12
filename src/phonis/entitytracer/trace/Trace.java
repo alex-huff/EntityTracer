@@ -42,7 +42,7 @@ public abstract class Trace {
      *
      * @return List<ParticleLocation>
      */
-    public abstract List<ParticleLocation> getParticles(int life, boolean connected);
+    public abstract List<ParticleLocation> getParticles(int life);
 
     /**
      * Get start location

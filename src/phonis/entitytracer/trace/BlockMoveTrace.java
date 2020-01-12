@@ -9,30 +9,26 @@ import java.util.List;
 /**
  * Trace representing tnt and sand movement
  */
-public abstract class BlockMoveTrace extends Trace {
+public abstract class BlockMoveTrace extends EntityMoveTrace {
     private boolean isStart;
     private boolean isFinish;
 
     /**
      * BlockMoveTrace constructor that calls the Trace super constructor
      *
-     * @param start   start location
-     * @param finish  finish location
-     * @param isStart start of entity's movement
+     * @param start         start location
+     * @param finish        finish location
+     * @param isStart       start of entity's movement
+     * @param isFinish      end of entity's movement
+     * @param isConnected   connected ticks
+     * @param isHypotenusal hypotenusal tick connection
      */
-    public BlockMoveTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
-        super(start.clone().add(0, .49, 0), finish.clone().add(0, .49, 0));
+    public BlockMoveTrace(Location start, Location finish, boolean isStart, boolean isFinish, boolean isConnected, boolean isHypotenusal) {
+        super(start.clone().add(0, .49, 0), finish.clone().add(0, .49, 0), isConnected, isHypotenusal);
 
         this.isStart = isStart;
         this.isFinish = isFinish;
     }
-
-    /**
-     * Type of particle
-     *
-     * @return ParticleType
-     */
-    protected abstract ParticleType getType();
 
     /**
      * Type of end position
@@ -47,12 +43,12 @@ public abstract class BlockMoveTrace extends Trace {
      * @return List<ParticleLocation>
      */
     @Override
-    public List<ParticleLocation> getParticles(int life, boolean connected) {
+    public List<ParticleLocation> getParticles(int life) {
         List<ParticleLocation> ret = new ArrayList<>();
         Location start = this.getStart();
         Location finish = this.getFinish();
 
-        if (isStart) {
+        if (this.isStart) {
             for (Offset offset : Trace.vertices) {
                 ret.add(
                     new ParticleLocation(
@@ -64,155 +60,13 @@ public abstract class BlockMoveTrace extends Trace {
             }
         }
 
-        ret.add(
-            new ParticleLocation(
-                start.clone(),
-                life,
-                this.getType()
-            )
-        );
-
-        if (connected) {
-            double offset = .25;
-
-            if (start.getY() < finish.getY()) {
-                while (start.getY() + offset < finish.getY()) {
-                    ret.add(
-                        new ParticleLocation(
-                            start.clone().add(0, offset, 0),
-                            life,
-                            this.getType()
-                        )
-                    );
-
-                    offset += .25;
-                }
-            } else {
-                while (start.getY() - offset > finish.getY()) {
-                    ret.add(
-                        new ParticleLocation(
-                            start.clone().add(0, -offset, 0),
-                            life,
-                            this.getType()
-                        )
-                    );
-
-                    offset += .25;
-                }
-            }
-
-            ret.add(
-                new ParticleLocation(
-                    new Location(
-                        start.getWorld(),
-                        start.getX(),
-                        finish.getY(),
-                        start.getZ()
-                    ),
-                    life,
-                    this.getType()
-                )
-            );
-
-            offset = .25;
-
-            if (start.getX() < finish.getX()) {
-                while (start.getX() + offset < finish.getX()) {
-                    ret.add(
-                        new ParticleLocation(
-                            new Location(
-                                start.getWorld(),
-                                start.getX() + offset,
-                                finish.getY(),
-                                start.getZ()
-                            ),
-                            life,
-                            this.getType()
-                        )
-                    );
-
-                    offset += .25;
-                }
-            } else {
-                while (start.getX() - offset > finish.getX()) {
-                    ret.add(
-                        new ParticleLocation(
-                            new Location(
-                                start.getWorld(),
-                                start.getX() - offset,
-                                finish.getY(),
-                                start.getZ()
-                            ),
-                            life,
-                            this.getType()
-                        )
-                    );
-
-                    offset += .25;
-                }
-            }
-
-            ret.add(
-                new ParticleLocation(
-                    new Location(
-                        start.getWorld(),
-                        finish.getX(),
-                        finish.getY(),
-                        start.getZ()
-                    ),
-                    life,
-                    this.getType()
-                )
-            );
-
-            offset = .25;
-
-            if (start.getZ() < finish.getZ()) {
-                while (start.getZ() + offset < finish.getZ()) {
-                    ret.add(
-                        new ParticleLocation(
-                            new Location(
-                                start.getWorld(),
-                                finish.getX(),
-                                finish.getY(),
-                                start.getZ() + offset
-                            ),
-                            life,
-                            this.getType()
-                        )
-                    );
-
-                    offset += .25;
-                }
-            } else {
-                while (start.getZ() - offset > finish.getZ()) {
-                    ret.add(
-                        new ParticleLocation(
-                            new Location(
-                                start.getWorld(),
-                                finish.getX(),
-                                finish.getY(),
-                                start.getZ() - offset
-                            ),
-                            life,
-                            this.getType()
-                        )
-                    );
-
-                    offset += .25;
-                }
-            }
+        if (this.isConnected) {
+            ret.addAll(this.getConnectedParticles(life));
+        } else {
+            ret.addAll(this.getTickParticles(life));
         }
 
-        ret.add(
-            new ParticleLocation(
-                finish.clone(),
-                life,
-                this.getType()
-            )
-        );
-
-        if (isFinish) {
+        if (this.isFinish) {
             for (Offset offset : Trace.vertices) {
                 ret.add(
                     new ParticleLocation(

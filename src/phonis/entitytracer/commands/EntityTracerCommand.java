@@ -61,6 +61,9 @@ public abstract class EntityTracerCommand implements CommandExecutor, TabComplet
      */
     public static void registerCommand(EntityTracer entityTracer, EntityTracerCommand etc) {
         PluginCommand pc = entityTracer.getCommand(etc.getName());
+
+        if (pc == null) return;
+
         pc.setExecutor(etc);
         pc.setTabCompleter(etc);
     }

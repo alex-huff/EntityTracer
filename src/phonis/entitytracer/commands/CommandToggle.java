@@ -18,10 +18,12 @@ public class CommandToggle extends EntityTracerCommand {
         this.addSubCommand(new CommandEndPos());
         this.addSubCommand(new CommandStartPos());
         this.addSubCommand(new CommandTickConnect());
+        this.addSubCommand(new CommandHypotenusal());
         this.addAlias("t");
         this.addAlias("tog");
         this.args.add("tnt");
         this.args.add("sand");
+        this.args.add("player");
     }
 
     /**
@@ -73,6 +75,11 @@ public class CommandToggle extends EntityTracerCommand {
 
             tu.toggleTraceSand();
             player.sendMessage("Sand tracing is now: " + tu.isTraceSand());
+        } else if (args[0].equals("player") || args[0].equals("p")) {
+            tu = TracerUser.getUser(player.getUniqueId());
+
+            tu.toggleTracePlayer();
+            player.sendMessage("Player tracing is now: " + tu.isTracePlayer());
         } else {
             throw new CommandException("Invalid toggle command");
         }

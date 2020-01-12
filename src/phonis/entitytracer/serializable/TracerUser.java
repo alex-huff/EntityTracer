@@ -20,11 +20,13 @@ public class TracerUser implements Serializable {
     private boolean trace;
     private boolean traceSand;
     private boolean traceTNT;
+    private boolean tracePlayer;
     private boolean endPosSand;
     private boolean endPosTNT;
     private boolean startPosSand;
     private boolean startPosTNT;
     private boolean tickConnect;
+    private boolean hypotenusal;
     private transient boolean unlimitedRadius = false;
     private double minDistance;
     private double traceRadius;
@@ -39,19 +41,24 @@ public class TracerUser implements Serializable {
      * @param trace        boolean representing tracing
      * @param traceSand    boolean representing tracing of sand
      * @param traceTNT     boolean representing tracing of tnt
+     * @param tracePlayer  boolean representing tracing of player
      * @param endPosSand   boolean representing end position of sand
      * @param endPosTNT    boolean representing end position of tnt
+     * @param startPosSand boolean representing start position of sand
+     * @param startPosTNT  boolean representing start position of tnt
      * @param tickConnect  boolean representing tick connection
+     * @param hypotenusal  boolean representing hypotenusality
      * @param minDistance  double representing minimum distance
      * @param traceRadius  double representing trace radius
      * @param viewRadius   double representing view radius
      * @param maxParticles int representing max particles
      * @param traceTime    int representing trace time
      */
-    private TracerUser(boolean trace, boolean traceSand, boolean traceTNT, boolean endPosSand, boolean endPosTNT, boolean startPosSand, boolean startPosTNT, boolean tickConnect, double minDistance, double traceRadius, double viewRadius, int maxParticles, int traceTime) {
+    private TracerUser(boolean trace, boolean traceSand, boolean traceTNT, boolean tracePlayer, boolean endPosSand, boolean endPosTNT, boolean startPosSand, boolean startPosTNT, boolean tickConnect, boolean hypotenusal, double minDistance, double traceRadius, double viewRadius, int maxParticles, int traceTime) {
         this.trace = trace;
         this.traceSand = traceSand;
         this.traceTNT = traceTNT;
+        this.tracePlayer = tracePlayer;
         this.endPosSand = endPosSand;
         this.endPosTNT = endPosTNT;
         this.startPosSand = startPosSand;
@@ -68,7 +75,7 @@ public class TracerUser implements Serializable {
      * Private default constructor for TracerUser
      */
     private TracerUser() {
-        this(false, true, true, false, true, false, true, true, 5.0D, 100D, 0D, 1000, 100);
+        this(false, true, true, false, false, true, false, true, true, false, 5.0D, 100D, 0D, 1000, 100);
     }
 
     /**
@@ -137,6 +144,22 @@ public class TracerUser implements Serializable {
      */
     public void toggleTraceTNT() {
         this.traceTNT = !this.traceTNT;
+    }
+
+    /**
+     * Determines whether user is tracing player
+     *
+     * @return boolean
+     */
+    public boolean isTracePlayer() {
+        return tracePlayer;
+    }
+
+    /**
+     * Toggle user tracing player
+     */
+    public void toggleTracePlayer() {
+        this.tracePlayer = !this.tracePlayer;
     }
 
     /**
@@ -217,6 +240,22 @@ public class TracerUser implements Serializable {
      */
     public void toggleTickConnect() {
         this.tickConnect = !this.tickConnect;
+    }
+
+    /**
+     * Determines whether user has hypotenusality
+     *
+     * @return boolean
+     */
+    public boolean isHypotenusal() {
+        return this.hypotenusal;
+    }
+
+    /**
+     * Toggle user hypotenusal
+     */
+    public void toggleHypotenusal() {
+        this.hypotenusal = !this.hypotenusal;
     }
 
     /**
@@ -348,12 +387,21 @@ public class TracerUser implements Serializable {
     }
 
     /**
-     * Clear Sand particles
+     * Clear sand particles
      */
     public void clearSand() {
         this.unNull();
 
-        this.pLocs.removeIf(pLocation -> pLocation.getType().compareTo(ParticleType.SAND) == 0 || pLocation.getType().compareTo(ParticleType.SANDENDPOS) == 0);
+        this.pLocs.removeIf(pLocation -> pLocation.getType().equals(ParticleType.SAND) || pLocation.getType().equals(ParticleType.SANDENDPOS));
+    }
+
+    /**
+     * Clear player particles
+     */
+    public void clearPlayer() {
+        this.unNull();
+
+        this.pLocs.removeIf(pLocation -> pLocation.getType().equals(ParticleType.PLAYER));
     }
 
     /**
@@ -362,7 +410,7 @@ public class TracerUser implements Serializable {
      * @param trace trace type
      */
     public void addTrace(Trace trace) {
-        this.addAllParticles(trace.getParticles(this.getTraceTime(), this.tickConnect));
+        this.addAllParticles(trace.getParticles(this.getTraceTime()));
     }
 
     /**
@@ -431,11 +479,13 @@ public class TracerUser implements Serializable {
             ChatColor.AQUA + "Trace enabled:             " + ChatColor.WHITE + this.isTrace() + "\n" +
                 ChatColor.AQUA + "Sand trace enabled:        " + ChatColor.WHITE + this.isTraceSand() + "\n" +
                 ChatColor.AQUA + "TNT trace enabled:         " + ChatColor.WHITE + this.isTraceTNT() + "\n" +
+                ChatColor.AQUA + "Player trace enabled:      " + ChatColor.WHITE + this.isTracePlayer() + "\n" +
                 ChatColor.AQUA + "Sand end positions:        " + ChatColor.WHITE + this.isEndPosSand() + "\n" +
                 ChatColor.AQUA + "TNT end positions:         " + ChatColor.WHITE + this.isEndPosTNT() + "\n" +
                 ChatColor.AQUA + "Sand start positions:      " + ChatColor.WHITE + this.isStartPosSand() + "\n" +
                 ChatColor.AQUA + "TNT start positions:       " + ChatColor.WHITE + this.isStartPosTNT() + "\n" +
                 ChatColor.AQUA + "Connect ticks:             " + ChatColor.WHITE + this.isTickConnect() + "\n" +
+                ChatColor.AQUA + "Hypotenusal:               " + ChatColor.WHITE + this.isHypotenusal() + "\n" +
                 ChatColor.AQUA + "Minimum distance traveled: " + ChatColor.WHITE + this.getMinDistance() + "\n" +
                 ChatColor.AQUA + "Trace radius:              " + ChatColor.WHITE + this.getTraceRadius() + "\n" +
                 ChatColor.AQUA + "Maximum particles:         " + ChatColor.WHITE + this.getMaxParticles() + "\n" +
@@ -453,11 +503,13 @@ public class TracerUser implements Serializable {
         this.trace = other.trace;
         this.traceSand = other.traceSand;
         this.traceTNT = other.traceTNT;
+        this.tracePlayer = other.tracePlayer;
         this.endPosSand = other.endPosSand;
         this.endPosTNT = other.endPosTNT;
         this.startPosSand = other.startPosSand;
         this.startPosTNT = other.startPosTNT;
         this.tickConnect = other.tickConnect;
+        this.hypotenusal = other.hypotenusal;
         this.minDistance = other.minDistance;
         this.traceRadius = other.traceRadius;
         this.maxParticles = other.maxParticles;

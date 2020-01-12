@@ -85,7 +85,7 @@ public class Tick implements Runnable {
 
             el = new EntityLocation(loc, false, entity.getType());
 
-            if (entity.getType().compareTo(EntityType.PRIMED_TNT) == 0 && entity.getTicksLived() == 80) {
+            if (entity.getType().equals(EntityType.PRIMED_TNT) && entity.getTicksLived() == 80) {
                 this.lastTicks.add(el);
             }
         } else {
@@ -103,7 +103,7 @@ public class Tick implements Runnable {
 
         for (World world : Bukkit.getServer().getWorlds()) {
             for (Entity entity : world.getEntities()) {
-                if (entity.getType().equals(EntityType.FALLING_BLOCK) || entity.getType().equals(EntityType.PRIMED_TNT)) {
+                if (entity.getType().equals(EntityType.FALLING_BLOCK) || entity.getType().equals(EntityType.PRIMED_TNT) || entity.getType().equals(EntityType.PLAYER)) {
                     processEntity(world, entity);
                 }
             }
@@ -149,7 +149,7 @@ public class Tick implements Runnable {
         while (it.hasNext()) {
             ParticleLocation pLocation = it.next();
 
-            if (pLocation.getLocation().getWorld().equals(player.getWorld())) {
+            if (pLocation.getLocation().getWorld() != null && pLocation.getLocation().getWorld().equals(player.getWorld())) {
                 if (tickCount == 5 && (pLocation.getLocation().distance(player.getLocation()) < tu.getViewRadius() || tu.isUnlimitedRadius())) {
                     PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
                         EnumParticle.REDSTONE,
@@ -157,7 +157,7 @@ public class Tick implements Runnable {
                         (float) pLocation.getLocation().getX(),
                         (float) pLocation.getLocation().getY(),
                         (float) pLocation.getLocation().getZ(),
-                        pLocation.getType().getRGB().getR() / 255f,
+                        pLocation.getType().getRGB().getR() / 255f - 1,
                         pLocation.getType().getRGB().getG() / 255f,
                         pLocation.getType().getRGB().getB() / 255f,
                         1,
@@ -198,13 +198,13 @@ public class Tick implements Runnable {
                                 && change.getVelocity() >= tu.getMinDistance()
                                 && player.getLocation().distance(change.getStart()) <= tu.getTraceRadius()
                         ) {
-                            if (change.getType().compareTo(EntityType.PRIMED_TNT) == 0 && tu.isTraceTNT()) {
+                            if (change.getType().equals(EntityType.PRIMED_TNT) && tu.isTraceTNT()) {
                                 boolean start = false;
                                 boolean finish = false;
 
-                                if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
+                                if (change.getChangeType().equals(ChangeType.END)) {
                                     finish = tu.isEndPosTNT();
-                                } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
+                                } else if (change.getChangeType().equals(ChangeType.START)) {
                                     start = tu.isStartPosTNT();
                                 }
 
@@ -213,16 +213,18 @@ public class Tick implements Runnable {
                                         change.getStart(),
                                         change.getFinish(),
                                         start,
-                                        finish
+                                        finish,
+                                        tu.isTickConnect(),
+                                        tu.isHypotenusal()
                                     )
                                 );
-                            } else if (change.getType().compareTo(EntityType.FALLING_BLOCK) == 0 && tu.isTraceSand()) {
+                            } else if (change.getType().equals(EntityType.FALLING_BLOCK) && tu.isTraceSand()) {
                                 boolean start = false;
                                 boolean finish = false;
 
-                                if (change.getChangeType().compareTo(ChangeType.EXPLOSION) == 0) {
+                                if (change.getChangeType().equals(ChangeType.END)) {
                                     finish = tu.isEndPosSand();
-                                } else if (change.getChangeType().compareTo(ChangeType.START) == 0) {
+                                } else if (change.getChangeType().equals(ChangeType.START)) {
                                     start = tu.isStartPosSand();
                                 }
 
@@ -231,7 +233,18 @@ public class Tick implements Runnable {
                                         change.getStart(),
                                         change.getFinish(),
                                         start,
-                                        finish
+                                        finish,
+                                        tu.isTickConnect(),
+                                        tu.isHypotenusal()
+                                    )
+                                );
+                            } else if (change.getType().equals(EntityType.PLAYER) && tu.isTracePlayer()) {
+                                tu.addTrace(
+                                    new PlayerTrace(
+                                        change.getStart(),
+                                        change.getFinish(),
+                                        tu.isTickConnect(),
+                                        tu.isHypotenusal()
                                     )
                                 );
                             }

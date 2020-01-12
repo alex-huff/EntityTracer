@@ -9,12 +9,14 @@ public class TNTTrace extends BlockMoveTrace {
     /**
      * TNTTrace constructor that calls the Trace super constructor
      *
-     * @param start   start location
-     * @param finish  finish location
-     * @param isStart start of entity's movement
+     * @param start         start location
+     * @param finish        finish location
+     * @param isStart       start of entity's movement
+     * @param isConnected   connected ticks
+     * @param isHypotenusal hypotenusal
      */
-    public TNTTrace(Location start, Location finish, boolean isStart, boolean isFinish) {
-        super(start, finish, isStart, isFinish);
+    public TNTTrace(Location start, Location finish, boolean isStart, boolean isFinish, boolean isConnected, boolean isHypotenusal) {
+        super(start, finish, isStart, isFinish, isConnected, isHypotenusal);
     }
 
     /**
