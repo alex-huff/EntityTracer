@@ -71,22 +71,27 @@ public class Tick implements Runnable {
 
         if (this.locations.containsKey(id)) {
             Location old = this.locations.get(id).getLocation();
-            LocationChange change;
 
-            if (this.locations.get(id).getNew()) {
-                change = new LocationChange(world, old, loc, entity.getType(), ChangeType.START);
+            if (!old.getWorld().equals(loc.getWorld())) {
+                el = new EntityLocation(loc, true, entity.getType());
             } else {
-                change = new LocationChange(world, old, loc, entity.getType(), ChangeType.NORMAL);
-            }
+                LocationChange change;
 
-            if (change.getChangeType().compareTo(ChangeType.NORMAL) != 0 || old.distance(loc) != 0) {
-                this.changes.add(change);
-            }
+                if (this.locations.get(id).getNew()) {
+                    change = new LocationChange(world, old, loc, entity.getType(), ChangeType.START);
+                } else {
+                    change = new LocationChange(world, old, loc, entity.getType(), ChangeType.NORMAL);
+                }
 
-            el = new EntityLocation(loc, false, entity.getType());
+                if (change.getChangeType().compareTo(ChangeType.NORMAL) != 0 || old.distance(loc) != 0) {
+                    this.changes.add(change);
+                }
 
-            if (entity.getType().equals(EntityType.PRIMED_TNT) && entity.getTicksLived() == 80) {
-                this.lastTicks.add(el);
+                el = new EntityLocation(loc, false, entity.getType());
+
+                if (entity.getType().equals(EntityType.PRIMED_TNT) && entity.getTicksLived() == 80) {
+                    this.lastTicks.add(el);
+                }
             }
         } else {
             el = new EntityLocation(loc, true, entity.getType());
