@@ -3,10 +3,10 @@ package phonis.entitytracer.serializable;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import phonis.entitytracer.EntityTracer;
+import phonis.entitytracer.trace.Line;
 import phonis.entitytracer.trace.ParticleLocation;
 import phonis.entitytracer.trace.ParticleLocationComparator;
 import phonis.entitytracer.trace.ParticleType;
-import phonis.entitytracer.trace.Trace;
 
 import java.io.Serializable;
 import java.util.*;
@@ -64,6 +64,7 @@ public class TracerUser implements Serializable {
         this.startPosSand = startPosSand;
         this.startPosTNT = startPosTNT;
         this.tickConnect = tickConnect;
+        this.hypotenusal = hypotenusal;
         this.minDistance = minDistance;
         this.traceRadius = traceRadius;
         this.viewRadius = viewRadius;
@@ -405,12 +406,12 @@ public class TracerUser implements Serializable {
     }
 
     /**
-     * Add trace
+     * Add line
      *
-     * @param trace trace type
+     * @param line Line
      */
-    public void addTrace(Trace trace) {
-        this.addAllParticles(trace.getParticles(this.getTraceTime()));
+    public void addLine(Line line) {
+        this.addAllParticles(line.getParticles(this.getTraceTime()));
     }
 
     /**

@@ -2,8 +2,6 @@ package phonis.entitytracer.trace;
 
 import org.bukkit.Location;
 
-import java.util.List;
-
 /**
  * Trace representing player movement
  */
@@ -31,16 +29,42 @@ public class PlayerTrace extends EntityMoveTrace {
     }
 
     /**
-     * Method extended from Trace
+     * Gets start particle type
      *
-     * @return List<ParticleLocation>
+     * @return ParticleType
      */
     @Override
-    public List<ParticleLocation> getParticles(int life) {
-        if (this.isConnected) {
-            return this.getConnectedParticles(life);
-        }
+    protected ParticleType getStartType() {
+        return null;
+    }
 
-        return this.getTickParticles(life);
+    /**
+     * Gets finish particle type
+     *
+     * @return ParticleType
+     */
+    @Override
+    protected ParticleType getFinishType() {
+        return null;
+    }
+
+    /**
+     * Gets start offset type
+     *
+     * @return OffsetType
+     */
+    @Override
+    protected OffsetType getStartOffsetType() {
+        return null;
+    }
+
+    /**
+     * Gets finish offset type
+     *
+     * @return OffsetType
+     */
+    @Override
+    protected OffsetType getFinishOffsetType() {
+        return null;
     }
 }

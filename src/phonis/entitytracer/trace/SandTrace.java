@@ -5,7 +5,8 @@ import org.bukkit.Location;
 /**
  * Trace representing sand movement
  */
-public class SandTrace extends BlockMoveTrace {
+public class SandTrace extends BlockTrace {
+
     /**
      * SandTrace constructor that calls the Trace super constructor
      *
@@ -30,12 +31,22 @@ public class SandTrace extends BlockMoveTrace {
     }
 
     /**
-     * Gets end type
+     * Get particle to represent start
      *
      * @return ParticleType
      */
     @Override
-    protected ParticleType getEndType() {
+    protected ParticleType getSType() {
+        return ParticleType.SAND;
+    }
+
+    /**
+     * Get particle to represent finish
+     *
+     * @return ParticleType
+     */
+    @Override
+    protected ParticleType getFType() {
         return ParticleType.SANDENDPOS;
     }
 }

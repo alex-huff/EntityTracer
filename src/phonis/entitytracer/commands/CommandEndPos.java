@@ -15,7 +15,6 @@ public class CommandEndPos extends EntityTracerCommand {
      */
     public CommandEndPos() {
         super("endpos");
-        this.addAlias("e");
         this.addAlias("ep");
         this.args.add("tnt");
         this.args.add("sand");

@@ -5,7 +5,7 @@ import org.bukkit.Location;
 /**
  * Trace representing tnt movement
  */
-public class TNTTrace extends BlockMoveTrace {
+public class TNTTrace extends BlockTrace {
     /**
      * TNTTrace constructor that calls the Trace super constructor
      *
@@ -30,12 +30,22 @@ public class TNTTrace extends BlockMoveTrace {
     }
 
     /**
-     * Gets end type
+     * Get particle to represent start
      *
      * @return ParticleType
      */
     @Override
-    protected ParticleType getEndType() {
+    protected ParticleType getSType() {
+        return ParticleType.TNT;
+    }
+
+    /**
+     * Get particle to represent finish
+     *
+     * @return ParticleType
+     */
+    @Override
+    protected ParticleType getFType() {
         return ParticleType.TNTENDPOS;
     }
 }

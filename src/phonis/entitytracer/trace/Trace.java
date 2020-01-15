@@ -1,28 +1,13 @@
 package phonis.entitytracer.trace;
 
 import org.bukkit.Location;
-import phonis.entitytracer.util.Offset;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Class representing tracked TNT and Sand movement
  */
 public abstract class Trace {
-    protected static List<Offset> vertices = new ArrayList<>(
-        Arrays.asList(
-            new Offset(.49F, .49F, .49F),
-            new Offset(-.49F, .49F, .49F),
-            new Offset(-.49F, -.49F, .49F),
-            new Offset(.49F, -.49F, .49F),
-            new Offset(.49F, .49F, -.49F),
-            new Offset(-.49F, .49F, -.49F),
-            new Offset(-.49F, -.49F, -.49F),
-            new Offset(.49F, -.49F, -.49F)
-        )
-    );
     private final Location start;
     private final Location finish;
 
@@ -38,11 +23,11 @@ public abstract class Trace {
     }
 
     /**
-     * The particles representing the trace
+     * The lines representing the trace
      *
-     * @return List<ParticleLocation>
+     * @return List<Line>
      */
-    public abstract List<ParticleLocation> getParticles(int life);
+    public abstract List<Line> getLines();
 
     /**
      * Get start location

@@ -15,7 +15,6 @@ public class CommandStartPos extends EntityTracerCommand {
      */
     public CommandStartPos() {
         super("startpos");
-        this.addAlias("s");
         this.addAlias("sp");
         this.args.add("tnt");
         this.args.add("sand");

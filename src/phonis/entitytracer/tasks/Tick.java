@@ -10,6 +10,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import phonis.entitytracer.EntityTracer;
 import phonis.entitytracer.serializable.TracerUser;
 import phonis.entitytracer.trace.*;
@@ -181,6 +182,28 @@ public class Tick implements Runnable {
         }
     }
 
+    private void handleTraces(List<Trace> traces, TracerUser tu) {
+        Map<Vector, LineSet> culledLines = new HashMap<>();
+
+        for (Trace trace : traces) {
+            List<Line> lines = trace.getLines();
+
+            for (Line line : lines) {
+                if (!culledLines.containsKey(line.getVec())) {
+                    culledLines.put(line.getVec(), new LineSet(tu.isTickConnect()));
+                }
+
+                culledLines.get(line.getVec()).add(line);
+            }
+        }
+
+        for (Vector vec : culledLines.keySet()) {
+            for (Line line : culledLines.get(vec)) {
+                tu.addLine(line);
+            }
+        }
+    }
+
     /**
      * Method inherited from Runnable
      */
@@ -197,6 +220,8 @@ public class Tick implements Runnable {
                 Player player = Bukkit.getPlayer(uuid);
 
                 if (player != null) {
+                    List<Trace> traces = new ArrayList<>();
+
                     for (LocationChange change : this.changes) {
                         if (
                             change.getWorld() == player.getWorld()
@@ -213,7 +238,8 @@ public class Tick implements Runnable {
                                     start = tu.isStartPosTNT();
                                 }
 
-                                tu.addTrace(
+
+                                traces.add(
                                     new TNTTrace(
                                         change.getStart(),
                                         change.getFinish(),
@@ -233,7 +259,7 @@ public class Tick implements Runnable {
                                     start = tu.isStartPosSand();
                                 }
 
-                                tu.addTrace(
+                                traces.add(
                                     new SandTrace(
                                         change.getStart(),
                                         change.getFinish(),
@@ -244,7 +270,7 @@ public class Tick implements Runnable {
                                     )
                                 );
                             } else if (change.getType().equals(EntityType.PLAYER) && tu.isTracePlayer()) {
-                                tu.addTrace(
+                                traces.add(
                                     new PlayerTrace(
                                         change.getStart(),
                                         change.getFinish(),
@@ -255,6 +281,8 @@ public class Tick implements Runnable {
                             }
                         }
                     }
+
+                    this.handleTraces(traces, tu);
 
                     tu.updateRadius(player.getLocation());
                     this.sendPackets(tu, player);
