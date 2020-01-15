@@ -17,6 +17,7 @@ public class Line {
     private ParticleType type;
     private boolean connected;
     private Vector direction;
+    private LineEq lineEq;
     private Set<Artifact> artifacts = new HashSet<>();
 
     /**
@@ -37,6 +38,7 @@ public class Line {
         this.type = type;
         this.connected = connected;
         this.direction = this.finish.clone().subtract(this.start).toVector().normalize();
+        this.lineEq = new LineEq(direction, this.start);
 
         if (startType != null && startOffsetType != null) {
             this.artifacts.add(new Artifact(this.start, startType, startOffsetType));
@@ -96,12 +98,12 @@ public class Line {
     }
 
     /**
-     * Gets direction of line
+     * Gets line equation
      *
-     * @return Vector
+     * @return LineEq
      */
-    public Vector getVec() {
-        return this.direction;
+    public LineEq getLineEq() {
+        return this.lineEq;
     }
 
     /**

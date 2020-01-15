@@ -10,7 +10,6 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import phonis.entitytracer.EntityTracer;
 import phonis.entitytracer.serializable.TracerUser;
 import phonis.entitytracer.trace.*;
@@ -183,22 +182,22 @@ public class Tick implements Runnable {
     }
 
     private void handleTraces(List<Trace> traces, TracerUser tu) {
-        Map<Vector, LineSet> culledLines = new HashMap<>();
+        Map<LineEq, LineSet> culledLines = new HashMap<>();
 
         for (Trace trace : traces) {
             List<Line> lines = trace.getLines();
 
             for (Line line : lines) {
-                if (!culledLines.containsKey(line.getVec())) {
-                    culledLines.put(line.getVec(), new LineSet(tu.isTickConnect()));
+                if (!culledLines.containsKey(line.getLineEq())) {
+                    culledLines.put(line.getLineEq(), new LineSet(tu.isTickConnect()));
                 }
 
-                culledLines.get(line.getVec()).add(line);
+                culledLines.get(line.getLineEq()).add(line);
             }
         }
 
-        for (Vector vec : culledLines.keySet()) {
-            for (Line line : culledLines.get(vec)) {
+        for (LineEq lineEq : culledLines.keySet()) {
+            for (Line line : culledLines.get(lineEq)) {
                 tu.addLine(line);
             }
         }
