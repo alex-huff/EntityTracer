@@ -405,6 +405,12 @@ public class TracerUser implements Serializable {
         this.pLocs.removeIf(pLocation -> pLocation.getType().equals(ParticleType.PLAYER));
     }
 
+    public void clearGraph() {
+        this.unNull();
+
+        this.pLocs.removeIf(pLocation -> pLocation.getType().equals(ParticleType.GRAPH));
+    }
+
     /**
      * Add line
      *

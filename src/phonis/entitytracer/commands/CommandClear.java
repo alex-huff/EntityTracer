@@ -19,6 +19,7 @@ public class CommandClear extends EntityTracerCommand {
         this.args.add("tnt");
         this.args.add("sand");
         this.args.add("player");
+        this.args.add("graph");
     }
 
     /**
@@ -75,6 +76,11 @@ public class CommandClear extends EntityTracerCommand {
 
             tu.clearPlayer();
             player.sendMessage("Cleared player particles");
+        } else if (args[0].equals("graph") || args[0].equals("g")) {
+            tu = TracerUser.getUser(player.getUniqueId());
+
+            tu.clearGraph();
+            player.sendMessage("Cleared graph particles");
         } else {
             throw new CommandException("Invalid toggle command");
         }

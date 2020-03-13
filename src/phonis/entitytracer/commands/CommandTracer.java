@@ -20,6 +20,7 @@ public class CommandTracer extends EntityTracerCommand {
         this.addSubCommand(new CommandTraceTime());
         this.addSubCommand(new CommandSettings());
         this.addSubCommand(new CommandBounds());
+        this.addSubCommand(new CommandGraph());
         EntityTracerCommand.registerCommand(entityTracer, this);
     }
 

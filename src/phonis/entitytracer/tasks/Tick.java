@@ -1,15 +1,13 @@
 package phonis.entitytracer.tasks;
 
-import net.minecraft.server.v1_8_R3.EnumParticle;
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
+import net.minecraft.server.v1_15_R1.PacketPlayOutWorldParticles;
+import net.minecraft.server.v1_15_R1.PlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.entity.*;
 import phonis.entitytracer.EntityTracer;
 import phonis.entitytracer.serializable.TracerUser;
 import phonis.entitytracer.trace.*;
@@ -21,7 +19,7 @@ import java.util.*;
  */
 public class Tick implements Runnable {
     private Set<LocationChange> changes = new HashSet<>();
-    public Set<EntityLocation> lastTicks = new HashSet<>();
+    private Set<EntityLocation> lastTicks = new HashSet<>();
     private Map<Integer, EntityLocation> locations = new HashMap<>();
     private EntityTracer entityTracer;
     private int tickCount = 0;
@@ -46,7 +44,7 @@ public class Tick implements Runnable {
      * Starts the ticking
      */
     public void start() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(entityTracer, this, 0L, 1L);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.entityTracer, this, 0L, 1L);
     }
 
     /**
@@ -72,7 +70,7 @@ public class Tick implements Runnable {
         if (this.locations.containsKey(id)) {
             Location old = this.locations.get(id).getLocation();
 
-            if (!old.getWorld().equals(loc.getWorld())) {
+            if (!Objects.equals(old.getWorld(), loc.getWorld())) {
                 el = new EntityLocation(loc, true, entity.getType());
             } else {
                 LocationChange change;
@@ -107,10 +105,8 @@ public class Tick implements Runnable {
         this.lastTicks.clear();
 
         for (World world : Bukkit.getServer().getWorlds()) {
-            for (Entity entity : world.getEntities()) {
-                if (entity.getType().equals(EntityType.FALLING_BLOCK) || entity.getType().equals(EntityType.PRIMED_TNT) || entity.getType().equals(EntityType.PLAYER)) {
-                    processEntity(world, entity);
-                }
+            for (Entity entity : world.getEntitiesByClasses(FallingBlock.class, TNTPrimed.class, Player.class)) {
+                processEntity(world, entity);
             }
         }
 
@@ -156,16 +152,40 @@ public class Tick implements Runnable {
 
             if (pLocation.getLocation().getWorld() != null && pLocation.getLocation().getWorld().equals(player.getWorld())) {
                 if (tickCount == 5 && (pLocation.getLocation().distance(player.getLocation()) < tu.getViewRadius() || tu.isUnlimitedRadius())) {
+//                    PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
+//                        EnumParticle.REDSTONE,
+//                        true,
+//                        (float) pLocation.getLocation().getX(),
+//                        (float) pLocation.getLocation().getY(),
+//                        (float) pLocation.getLocation().getZ(),
+//                        pLocation.getType().getRGB().getR() / 255f - 1,
+//                        pLocation.getType().getRGB().getG() / 255f,
+//                        pLocation.getType().getRGB().getB() / 255f,
+//                        1,
+//                        0
+//                    );
+//
+//                    connection.sendPacket(packet);
                     PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(
-                        EnumParticle.REDSTONE,
+                        org.bukkit.craftbukkit.v1_15_R1.CraftParticle.toNMS(
+                            Particle.REDSTONE,
+                            new Particle.DustOptions(
+                                org.bukkit.Color.fromRGB(
+                                    pLocation.getType().getRGB().getR(),
+                                    pLocation.getType().getRGB().getG(),
+                                    pLocation.getType().getRGB().getB()
+                                ),
+                                1f
+                            )
+                        ),
                         true,
-                        (float) pLocation.getLocation().getX(),
-                        (float) pLocation.getLocation().getY(),
-                        (float) pLocation.getLocation().getZ(),
-                        pLocation.getType().getRGB().getR() / 255f - 1,
-                        pLocation.getType().getRGB().getG() / 255f,
-                        pLocation.getType().getRGB().getB() / 255f,
-                        1,
+                        pLocation.getLocation().getX(),
+                        pLocation.getLocation().getY(),
+                        pLocation.getLocation().getZ(),
+                        0f,
+                        0f,
+                        0f,
+                        0f,
                         0
                     );
 

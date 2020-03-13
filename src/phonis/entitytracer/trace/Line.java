@@ -61,6 +61,27 @@ public class Line {
         this(start, finish, type, null, null, null, null, connected);
     }
 
+    public Location getStart() {
+        return this.start;
+    }
+
+    public void setStart(Location start) {
+        this.start = start;
+    }
+
+    public Location getFinish() {
+        return this.finish;
+    }
+
+    // assume direction doesn't change
+    public void setFinish(Location finish) {
+        this.finish = finish;
+    }
+
+    public Vector getDirection() {
+        return this.direction;
+    }
+
     /**
      * Gets type of particles
      *
@@ -77,8 +98,6 @@ public class Line {
      */
     public Line getCombinedLine(Line other) {
         if (this.start.distance(other.finish) >= other.start.distance(this.finish)) {
-            System.out.println(this.start.toString() + " " + this.finish.toString());
-
             return new Line(this.start, other.finish, this.type, this.connected).addArtifacts(this).addArtifacts(other);
         }
 
